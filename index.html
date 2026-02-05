@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="images/HUH.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Portfolio</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contacts">Contacts</a>
+        <div class="darkmode">
+            <input type="checkbox" id="icon"/>
+            <label for="icon"></label>
+        </div>   
+    </nav>
+
+    <video autoplay loop muted plays-inline class="background-video">
+        <source src="video/5485148-hd_1920_1080_25fps.mp4">
+    </video>
+
+    <div class="header-image">
+        <div class="header">
+            <h1 class="main-text">WELCOME</h1>
+                <div class="main-info">
+                    <h2>Adrian Jay S. Salilin</h2>
+                    <p>Web Developer</p>
+                </div>
+            <img src="images/ishowspeed-speed.gif" alt="Picture of me" class="main-image">
+        </div>
+    </div>
+
+    <div id="about" class="about-section">
+        <div class="about-lefttext">
+            <p>nthivanitawgiyo ngy abgntwyrbgty anqrwbgyintu rwqbguybguyibuygiwaqt rbguyrtw abegiquybiuygtqrwebg uybgiqrtuwyn biuygtqwr ubginybgiqtuwy nrbiuygnqtw giuybqrtw giuybqtw giruygiqtuwy rgiuybqtw bginuyq tw random shits</p>
+        </div>
+
+        <div class="about-text">
+            <h1 class="about-h1">ABOUT</h1>
+            <img class="about-image" src="images/chicken on a tree.jpg">
+        </div>
+
+        <div class="about-righttext">
+            <p>
+                nvtainityqw4niinouy tqrwnygiginoy ginyoginy ginyginyo gnyionygio ginoyygino ngioy ginoyginoy ginoy gyinognyio gnyginoy gny idk gny gny nyggn ygny what hngnioginoyn gioyto type
+            </p>
+        </div>
+    </div>
+
+    <div id="skills" class="skills-section">
+            <div class="skills">
+                <div class="skills-pictures">
+                    <img class="skills-images" src="images/html.png">
+                    <img class="skills-images" src="images/csslangauge.png">
+                    <img class="skills-images" src="images/C_Programming_Language.svg.png">
+                    <img class="skills-images" src="images/Flag_of_the_Netherlands.svg.webp">
+                </div>
+                <p class="skills-description">
+                    My skills are, that i know a bit of HTML, CSS and very little of JavaScript, mostly because i started making a website back in 2024 when i was surgeried after, and had nothing to do since i ahd to stop school for a year. My knowledge on C language is decent enough but not as good as others for now.
+                    I can also speak a bit of dutch and understand a bit.
+                </p>
+            </div>
+        <div class="skills-text">
+            <h1 class="skills-h1">SKILLS</h1>
+            <img class="skills-image" src="images/catjam.png">
+        </div>
+    </div>
+
+    <div id="projects" class="projects-section">
+        <h1 class="projects-title">PROJECTS</h1>
+        <div class="project-cards">
+            <div class="project-images">
+                <a target="_blank" href="https://visitph.netlify.app/">
+                    <img src="images/visitphimage.png" alt="VisitPH Website Image">
+                </a>
+                <h1>VisitPH</h1>
+            </div>
+            <div class="card-content">
+                <p>A website i made back in 2024, and its purpose was just to view the famous places, and foods from the 3 major islands in the philippines.</p>
+            </div>
+        </div>
+
+        <div class="project-cards">
+            <div class="project-images">
+                <a target="_blank" href="https://pagman.netlify.app/">
+                <img src="images/birthdaygiftproject.png" alt="Birthday Gift Website Image">
+                </a>
+                <h1>Birthday Gift</h1>
+            </div>
+            <div class="card-content">
+                <p>Literaly serves no purpose other than absolutely destroying your ears.</p>
+            </div>
+        </div>
+
+        <div class="project-cards">
+            <div class="project-images">
+                <img  onclick="playSound()" src="images/bird on a tree meme.jpg" alt="Project Image">
+                <audio id="loudChicken" src="audio/Chicken on tree screaming viral sound effect  Meme sound.mp3" type="audio/mpeg"></audio>
+                <h1>Chicken</h1>
+            </div>
+            <div class="card-content">
+                <p>Chicken on a tree. <br> Click on it as much as you like</p>
+            </div>
+        </div>
+    </div>
+
+<div id="contacts" class="contacts-section">
+    <h1 class="contact-title">CONTACTS</h1>
+
+    <a href="https://www.facebook.com/AdrianJayS/" target="_blank" class="contact-box">
+        <img class="contact-icon" src="images/Facebook_logo_(square).png" alt="Facebook">
+        <span class="contact-label">Facebook</span>
+    </a>
+
+    <a href="https://www.linkedin.com/in/ajss/" target="_blank" class="contact-box">
+        <img class="contact-icon" src="images/LinkedIn_icon.svg.png" alt="LinkedIn">
+        <span class="contact-label">LinkedIn</span>
+    </a>
+
+    <a href="https://steamcommunity.com/id/yeetmcyeetersons20/" target="_blank" class="contact-box">
+        <img class="contact-icon" src="images/steamicon.png" alt="Steam">
+        <span class="contact-label">Steam</span>
+    </a>
+
+    <a href="https://github.com/Corv1z" target="_blank" class="contact-box">
+        <img class="contact-icon" src="images/githubicon.png" alt="Steam">
+        <span class="contact-label">Github</span>
+    </a>
+
+</div>
+
+    <div class="backtotop">
+        <a href="#" class="backtotop-button">Back to Top</a>
+    </div>
+
+    <footer class="footer">
+        <div class="copyright">
+            <p>Copyright &copy; 2026, Designed by <span class="copyright-name">Adrian</span></p>
+        </div>
+    </footer>
+
+    <script src="JS/index.js"></script> 
+
+</body>
+</html>
