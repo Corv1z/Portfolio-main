@@ -34,7 +34,7 @@ html {
     overflow-x: hidden;
 }
 
-label{
+.label-darkmode{
     width: 66px;
     height: 20px;
     position: relative;
@@ -47,7 +47,7 @@ label{
     transition: 0.3s;
 }
 
-label:after{
+.label-darkmode:after{
     content: "";
     width: 27px;
     height: 27px;
@@ -60,15 +60,15 @@ label:after{
     transition: 0.15s cubic-bezier(0.15, 0.46, 0.6, 1.275);
 }
 
-input{
+.input-darkmode{
     visibility: hidden;
 }
 
-input:checked + label{
+.input-darkmode:checked + .label-darkmode{
     background: #242424;
 }
 
-input:checked + label:after{
+.input-darkmode:checked + .label-darkmode:after{
     left: 62px;
     transform: translateX(-50%);
     background: linear-gradient(180deg, #777,#3a3a3a);
@@ -562,6 +562,77 @@ input:checked + label:after{
     letter-spacing: 5px;
 }
 
+.container{
+    display: flex;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-color);
+    font-family: sans-serif;
+    font-weight: 900;
+    margin-bottom: 150px;
+}
+
+.form-btn{
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 90px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 15px;
+    margin-top: 10px;
+    color: var(--secondary-color);
+    font-weight: 800;
+    font-family: sans-serif;
+    cursor: pointer;
+    left: 0;
+}
+
+.form-btn:hover{
+    transform: scale(1.1);
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.form-leftside{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    align-items: center;
+}
+
+.form-leftside p{
+    margin-bottom: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+.form-input{
+    background: rgba(255, 255, 255, 0.0);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 18px;
+    font-size: 20px;
+    margin-top: 15px;
+    color: var(--secondary-color);
+}
+
+
+.form-input-message{
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.0);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    font-size: 22px;
+    color: var(--secondary-color);
+}
+
+
 @media (max-width: 768px) {
     html {
     transition: all 0.6s;
@@ -630,7 +701,7 @@ input:checked + label:after{
         padding-left: 8px; 
     }
 
-    .navbar .darkmode label {
+    .navbar .darkmode .label-darkmode {
         width: 40px;  
         height: 20px;
     }

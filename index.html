@@ -15,8 +15,8 @@
         <a href="#projects">Projects</a>
         <a href="#contacts">Contacts</a>
         <div class="darkmode">
-            <input type="checkbox" id="icon"/>
-            <label for="icon"></label>
+            <input class="input-darkmode" type="checkbox" id="icon"/>
+            <label class="label-darkmode" for="icon"></label>
         </div>   
     </nav>
 
@@ -134,6 +134,18 @@
 
 </div>
 
+<div class="container">
+  <form form action="https://api.web3forms.com/submit" method="POST">
+        <div class="form-leftside">
+            <input type="hidden" name="access_key" value="ff527ec1-1101-4a42-aaf8-df5f8f603bb1">
+            <p>Email: <input class="form-input" type="email" id="Email" name="email" placeholder="Email"></p>
+            <p>Name: <input class="form-input" type="text" id="fname" name="name" placeholder="Name"></p>
+            <p>Message<textarea class="form-input-message" id="subject" name="mssage placeholder="Your Message.." style="height:200px"></textarea></p>
+            <button class="form-btn" type="submit">Submit</button>
+        </div>
+  </form>
+</div>
+
     <div class="backtotop">
         <a href="#" class="backtotop-button">Back to Top</a>
     </div>
@@ -144,7 +156,7 @@
         </div>
     </footer>
 
-    <script src="JS/index.js"></script> 
+    <script src="js/index.js"></script> 
 
 </body>
 </html>
