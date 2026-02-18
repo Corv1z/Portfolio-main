@@ -582,6 +582,7 @@ html {
     font-family: sans-serif;
     font-weight: 900;
     margin-bottom: 150px;
+    left: 50%;
 }
 
 .form-btn{
@@ -641,6 +642,70 @@ html {
     padding: 10px;
     font-size: 22px;
     color: var(--secondary-color);
+}
+
+.comments-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 100px auto;
+    padding: 20px;
+}
+
+.comments-title {
+    font-size: 80px;
+    font-weight: 900;
+    font-family: sans-serif;
+    color: var(--secondary-color);
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.comment-form {
+    width: 100%;
+    margin-bottom: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comment-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    animation: fadeIn 0.5s ease;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+.comment-name {
+    color: wheat;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.comment-date {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+.comment-body {
+    color: var(--secondary-color);
+    font-family: sans-serif;
+    line-height: 1.9;
 }
 
 @media (max-width: 768px) {
@@ -838,3 +903,4 @@ html {
         font-size: 15px;
     }
 }
+
