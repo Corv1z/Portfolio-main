@@ -1,6 +1,3 @@
-/* --- index.js --- */
-
-// 1. SELECT ELEMENTS SAFELY
 var headerImage = document.querySelector(".header-image");
 var navbar = document.querySelector(".navbar");
 
@@ -68,7 +65,7 @@ window.addEventListener('resize', checkMobileAnimation);
 
 /* --- COMMENTS FUNCTIONALITY --- */
 
-const API_URL = "http://127.0.0.1:3000/comments"; 
+const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 
 // Function to Load Comments
 async function loadComments() {
