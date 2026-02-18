@@ -1,6 +1,7 @@
 var icon = document.getElementById("icon");
 var body = document.body;
 var headerImage = document.querySelector(".header-image");
+var navbar = document.querySelector(".navbar");
 
 if (localStorage.getItem("darkMode") === "true") {
     body.classList.add("dark-theme");
@@ -10,7 +11,16 @@ if (localStorage.getItem("darkMode") === "true") {
 icon.onclick = function() {
     body.classList.toggle("dark-theme");
     localStorage.setItem("darkMode", body.classList.contains("dark-theme"));
-};  
+};
+
+window.onscroll = function() {
+
+    if (window.scrollY > 550) {
+        navbar.classList.add("scrolled");
+    } else {
+        navbar.classList.remove("scrolled");
+    }
+};
 
 function playSound() {
     var audio = document.getElementById('loudChicken'); 
@@ -32,5 +42,9 @@ function checkMobileAnimation() {
     }
 }
 
+
+
 checkMobileAnimation();
 window.addEventListener('resize', checkMobileAnimation);
+
+

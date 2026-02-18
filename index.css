@@ -75,13 +75,13 @@ html {
 }
 
 :root{
-    --primary-color: wheat;
+    --primary-color: rgba(105, 101, 90, 0.329);
     --secondary-color: #212121;
 }
 
 .dark-theme{
     --primary-color: #212121;
-    --secondary-color: wheat;
+    --secondary-color: rgb(226, 216, 187);
 }
 
 .darkmode {
@@ -101,6 +101,7 @@ html {
 }
 
 .header-image {
+    background-color: #212121; 
     height: 600px;
     border-radius: 0 0 60px 60px;
     box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.5);
@@ -108,6 +109,7 @@ html {
     border-bottom: 1px solid rgb(109, 102, 102);
     z-index: 1; 
 }
+
 
 .header-image::before {
     content: "";
@@ -130,7 +132,7 @@ html {
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;
-    color: var(--secondary-color);
+    color: wheat; 
     font-size: 100px;
     font-weight: 900;
     font-family: 'Inter', sans-serif;
@@ -163,7 +165,7 @@ html {
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.4s ease;
-    color: var(--secondary-color);
+    color: wheat;
     font-family: sans-serif;
 }
 
@@ -205,6 +207,13 @@ html {
     transition: all 0.3s ease;
 }
 
+.navbar.scrolled {
+    background: #212121 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease;
+}
+
 .navbar a {
     text-decoration: none;
     color: wheat;
@@ -234,6 +243,7 @@ html {
 .navbar a:hover {
     opacity: 0.8; 
 }
+
 .about-section {
     display: flex;
     justify-content: center;
@@ -242,6 +252,7 @@ html {
     padding: 100px 50px;
     width: 100%;
 }
+
 .about-lefttext, 
 .about-righttext {
     width: 300px;
@@ -608,6 +619,7 @@ html {
     flex-direction: column;
     align-items: center
 }
+
 .form-input{
     background: rgba(255, 255, 255, 0.0);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -620,7 +632,6 @@ html {
     color: var(--secondary-color);
 }
 
-
 .form-input-message{
     margin-top: 15px;
     background: rgba(255, 255, 255, 0.0);
@@ -632,7 +643,6 @@ html {
     color: var(--secondary-color);
 }
 
-
 @media (max-width: 768px) {
     html {
     transition: all 0.6s;
@@ -642,7 +652,6 @@ html {
     }
 
    .main-text {
-        color: var(--secondary-color);
         font-size: 50px;
     }
 
@@ -658,8 +667,6 @@ html {
 
     .main-info {
         text-align: center;
-        color: var(--secondary-color);
-        font-family: sans-serif;
         position: absolute;
         bottom: 75px;
         transform: translateX(-50%);
@@ -717,7 +724,7 @@ html {
         gap: 0; 
     }
 
-.darkmode {
+    .darkmode {
         margin-left: 0;
         padding-left: 0;
         border-left: none; 
