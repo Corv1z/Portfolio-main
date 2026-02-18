@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../../.config/vesktop/themes"
+		}
+	],
+	"settings": {
+		"glassit.alpha": 150,
+		"liveServer.settings.multiRootWorkspaceName": "VSCode Shits"
+	}
+}
