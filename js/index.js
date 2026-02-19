@@ -134,9 +134,9 @@ function renderComments() {
             const userLikedReply = Array.isArray(r.likes) && r.likes.includes(myUserId);
             const userDislikedReply = Array.isArray(r.dislikes) && r.dislikes.includes(myUserId);
             
-            // Render GIFs and Uploaded Images for replies
-            const replyGifHtml = r.gifUrl ? `<div class="media-preview-wrapper"><img src="${r.gifUrl}" class="media-preview-image"></div>` : '';
-            const replyImageHtml = r.imageUrl ? `<div class="media-preview-wrapper"><img src="${r.imageUrl}" class="media-preview-image"></div>` : '';
+            // NEW: Added zoom-in cursor and onclick to reply images
+            const replyGifHtml = r.gifUrl ? `<div class="media-preview-wrapper"><img src="${r.gifUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${r.gifUrl}')"></div>` : '';
+            const replyImageHtml = r.imageUrl ? `<div class="media-preview-wrapper"><img src="${r.imageUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${r.imageUrl}')"></div>` : '';
             
             return `
             <div class="reply-container" id="reply-item-${r._id}">
@@ -158,14 +158,13 @@ function renderComments() {
             </div>`;
         }).join('');
 
-        // Render GIFs and Uploaded Images for main comments
-        const mainGifHtml = comment.gifUrl ? `<div class="media-preview-wrapper"><img src="${comment.gifUrl}" class="media-preview-image"></div>` : '';
-        const mainImageHtml = comment.imageUrl ? `<div class="media-preview-wrapper"><img src="${comment.imageUrl}" class="media-preview-image"></div>` : '';
+        // NEW: Added zoom-in cursor and onclick to main comment images
+        const mainGifHtml = comment.gifUrl ? `<div class="media-preview-wrapper"><img src="${comment.gifUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.gifUrl}')"></div>` : '';
+        const mainImageHtml = comment.imageUrl ? `<div class="media-preview-wrapper"><img src="${comment.imageUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.imageUrl}')"></div>` : '';
 
         const isLong = comment.message.length > 300;
         const pinnedBadge = comment.isPinned ? `<span style="background: rgba(245, 222, 179, 0.2); color: wheat; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 10px; border: 1px solid rgba(245, 222, 179, 0.4);">📌 Pinned</span>` : '';
 
-        // Get reaction counts
         const hearts = comment.reactions?.heart?.length || 0;
         const laughs = comment.reactions?.laugh?.length || 0;
         const wows = comment.reactions?.wow?.length || 0;
@@ -432,4 +431,21 @@ function handleImagePreview(inputId, previewId) {
 function clearImagePreview(inputId, previewId) {
     document.getElementById(inputId).value = "";
     document.getElementById(previewId).innerHTML = "";
+}
+
+document.body.insertAdjacentHTML('beforeend', `
+    <div id="lightbox-modal" onclick="closeLightbox()" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; cursor: zoom-out;">
+        <span style="position: absolute; top: 20px; right: 30px; color: wheat; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+        <img id="lightbox-img" style="max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(245, 222, 179, 0.2);">
+    </div>
+`);
+
+function openLightbox(imgSrc) {
+    document.getElementById('lightbox-img').src = imgSrc;
+    document.getElementById('lightbox-modal').style.display = 'flex';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox-modal').style.display = 'none';
+    document.getElementById('lightbox-img').src = '';
 }
