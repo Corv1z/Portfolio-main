@@ -313,9 +313,6 @@ function formatTime(dateString) {
     return `${exact} • ${relative}`;
 }
 
-/* =========================================
-   GIPHY ENGINE (PREVIEW FIXED)
-========================================= */
 const GIPHY_API_KEY = "8DmyfSHSLUnnK0lxTkTDQQ21RYYGEvMR"; 
 let targetGifInput = "";
 let targetGifPreview = "";
@@ -386,9 +383,7 @@ function removeGif(inputId, previewId) {
 setInterval(async () => {
     try {
         const response = await fetch(API_URL);
-        const data = await response.json(); // Now contains { comments, typingList }
-        
-        // Update Typing Indicator
+        const data = await response.json();
         const indicator = document.getElementById("typing-indicator");
         const othersTyping = data.typingList.filter(u => u.name !== (document.getElementById("comment-name").value || "Someone"));
 
@@ -399,13 +394,12 @@ setInterval(async () => {
             indicator.style.opacity = "0";
         }
 
-        // Update comments if needed
         if (JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
             allComments = data.comments;
             renderComments();
         }
     } catch (error) {}
-}, 3000); // Check faster (every 3s) for smoother interaction
+}, 3000); 
 
 const canvasElement = document.getElementById("snow-canvas");
 const canvasContext = canvasElement.getContext("2d");

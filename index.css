@@ -1017,7 +1017,6 @@ html {
     animation: popUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Show the menu when hovering over the wrapper */
 .react-wrapper:hover .reaction-popup {
     display: flex;
     gap: 10px;
@@ -1057,9 +1056,13 @@ html {
     width: 45px;
     height: 45px;
     background: rgba(245, 222, 179, 0.1);
-    border-radius: 50%;
+    border-radius: 11px;
     border: 1px solid rgba(245, 222, 179, 0.3);
     padding: 2px;
+}
+
+.comments-title{
+    margin-bottom: 300px;
 }
 
 .dark-theme .comment-avatar {
@@ -1142,7 +1145,7 @@ html {
     }
 
     .navbar a {
-        font-size: 11px;
+        font-size: 9px;
         padding: 5px;
         gap: 0; 
     }
@@ -1248,9 +1251,6 @@ html {
 
     .comments-title{
         font-size: 50px;
-    }
-
-    .comments-section {
     }
 
     .footer{
