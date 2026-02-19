@@ -9,7 +9,6 @@
     <title>Portfolio</title>
 </head>
 <body>
-    <script src="js/index.js"></script> 
     <nav class="navbar">
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
@@ -39,35 +38,29 @@
 
     <div id="about" class="about-section">
         <div class="about-lefttext">
-            <p>I am a developer studying at Our Lady of Fatima University. I started learning HTML and CSS back in 2024 while recovering from my Amputation surgery, since that was the only way mind mind could take off the painful Phantom Pain.
-            </p>
+            <p>I am a developer studying at Our Lady of Fatima University. I started learning HTML and CSS back in 2024 while recovering from my Amputation surgery, since that was the only way mind mind could take off the painful Phantom Pain.</p>
         </div>
-
         <div class="about-text">
             <h1 class="about-h1">ABOUT</h1>
             <img class="about-image" src="images/chicken on a tree.jpg">
         </div>
-
         <div class="about-righttext">
-            <p>
-                I also like playing games, most notably Legend of Zelda TOTK, and BOTW, not really into multiplayer,competitive games since that just pisses me off, so i just stick to Singleplayer gameas which i really enjoy
-            </p>
+            <p>I also like playing games, most notably Legend of Zelda TOTK, and BOTW, not really into multiplayer,competitive games since that just pisses me off, so i just stick to Singleplayer gameas which i really enjoy</p>
         </div>
     </div>
 
     <div id="skills" class="skills-section">
-            <div class="skills">
-                <div class="skills-pictures">
-                    <img class="skills-images" src="images/html.png">
-                    <img class="skills-images" src="images/csslangauge.png">
-                    <img class="skills-images" src="images/C_Programming_Language.svg.png">
-                    <img class="skills-images" src="images/Flag_of_the_Netherlands.svg.webp">
-                </div>
-                <p class="skills-description">
-                    My skills are, that i know a bit of HTML, CSS and very little of JavaScript, mostly because i started making a website back in 2024 when i was surgeried after, and had nothing to do since i ahd to stop school for a year. My knowledge on C language is decent enough but not as good as others for now.
-                    I can also speak a bit of dutch and understand a bit.
-                </p>
+        <div class="skills">
+            <div class="skills-pictures">
+                <img class="skills-images" src="images/html.png">
+                <img class="skills-images" src="images/csslangauge.png">
+                <img class="skills-images" src="images/C_Programming_Language.svg.png">
+                <img class="skills-images" src="images/Flag_of_the_Netherlands.svg.webp">
             </div>
+            <p class="skills-description">
+                My skills are, that i know a bit of HTML, CSS and very little of JavaScript, mostly because i started making a website back in 2024 when i was surgeried after, and had nothing to do since i ahd to stop school for a year. My knowledge on C language is decent enough but not as good as others for now. I can also speak a bit of dutch and understand a bit.
+            </p>
+        </div>
         <div class="skills-text">
             <h1 class="skills-h1">SKILLS</h1>
             <img class="skills-image" src="images/catjam.png">
@@ -87,7 +80,6 @@
                 <p>A website i made back in 2024, and its purpose was just to view the famous places, and foods from the 3 major islands in the philippines.</p>
             </div>
         </div>
-
         <div class="project-cards">
             <div class="project-images">
                 <a target="_blank" href="https://pagman.netlify.app/">
@@ -99,10 +91,9 @@
                 <p>Literaly serves no purpose other than absolutely destroying your ears.</p>
             </div>
         </div>
-
         <div class="project-cards">
             <div class="project-images">
-                <img  onclick="playSound()" src="images/bird on a tree meme.jpg" alt="Project Image">
+                <img onclick="playSound()" src="images/bird on a tree meme.jpg" alt="Project Image">
                 <audio id="loudChicken" src="audio/Chicken on tree screaming viral sound effect  Meme sound.mp3" type="audio/mpeg"></audio>
                 <h1>Chicken</h1>
             </div>
@@ -112,55 +103,56 @@
         </div>
     </div>
 
-<div id="contacts" class="contacts-section">
-    <h1 class="contact-title">CONTACTS</h1>
-
-    <a href="https://www.facebook.com/AdrianJayS/" target="_blank" class="contact-box">
-        <img class="contact-icon" src="images/Facebook_logo_(square).png" alt="Facebook">
-        <span class="contact-label">Facebook</span>
-    </a>
-
-    <a href="https://www.linkedin.com/in/ajss/" target="_blank" class="contact-box">
-        <img class="contact-icon" src="images/LinkedIn_icon.svg.png" alt="LinkedIn">
-        <span class="contact-label">LinkedIn</span>
-    </a>
-
-    <a href="https://steamcommunity.com/id/yeetmcyeetersons20/" target="_blank" class="contact-box">
-        <img class="contact-icon" src="images/steamicon.png" alt="Steam">
-        <span class="contact-label">Steam</span>
-    </a>
-
-    <a href="https://github.com/Corv1z" target="_blank" class="contact-box">
-        <img class="contact-icon" src="images/githubicon.png" alt="Steam">
-        <span class="contact-label">Github</span>
-    </a>
-
-</div>
-
-<div class="container">
-  <form form action="https://api.web3forms.com/submit" method="POST">
-        <div class="form-leftside">
-            <input type="hidden" name="access_key" value="ff527ec1-1101-4a42-aaf8-df5f8f603bb1">
-            <p>Email: <input class="form-input" type="email" id="Email" name="email" placeholder="Email"></p>
-            <p>Name: <input class="form-input" type="text" id="fname" name="name" placeholder="Name"></p>
-            <p>Message<textarea class="form-input-message" id="subject" name="mssage placeholder="Your Message" style="height:200px"></textarea></p>
-            <button class="form-btn" type="submit">Submit</button>
-        </div>
-  </form>
-</div>
-
-<div class="comments-section" id="comments">
-    <h1 class="comments-title" style="position: relative; top: 0; margin-bottom: 40px;">COMMENTS</h1>
-    
-    <div class="comment-form">
-        <input type="text" id="comment-name" placeholder="Your Name" class="form-input" style="width: 100%;">
-        <textarea id="comment-text" placeholder="Write a comment..." class="form-input-message" style="width: 100%; height: 100px;"></textarea>
-        <button onclick="postComment()" class="form-btn">Post Comment</button>
+    <div id="contacts" class="contacts-section">
+        <h1 class="contact-title">CONTACTS</h1>
+        <a href="https://www.facebook.com/AdrianJayS/" target="_blank" class="contact-box">
+            <img class="contact-icon" src="images/Facebook_logo_(square).png" alt="Facebook">
+            <span class="contact-label">Facebook</span>
+        </a>
+        <a href="https://www.linkedin.com/in/ajss/" target="_blank" class="contact-box">
+            <img class="contact-icon" src="images/LinkedIn_icon.svg.png" alt="LinkedIn">
+            <span class="contact-label">LinkedIn</span>
+        </a>
+        <a href="https://steamcommunity.com/id/yeetmcyeetersons20/" target="_blank" class="contact-box">
+            <img class="contact-icon" src="images/steamicon.png" alt="Steam">
+            <span class="contact-label">Steam</span>
+        </a>
+        <a href="https://github.com/Corv1z" target="_blank" class="contact-box">
+            <img class="contact-icon" src="images/githubicon.png" alt="Github">
+            <span class="contact-label">Github</span>
+        </a>
     </div>
 
-    <div id="comments-container" class="comments-list">
+    <div class="container">
+      <form action="https://api.web3forms.com/submit" method="POST">
+            <div class="form-leftside">
+                <input type="hidden" name="access_key" value="ff527ec1-1101-4a42-aaf8-df5f8f603bb1">
+                <p>Email: <input class="form-input" type="email" id="Email" name="email" placeholder="Email"></p>
+                <p>Name: <input class="form-input" type="text" id="fname" name="name" placeholder="Name"></p>
+                <p>Message<textarea class="form-input-message" id="subject" name="message" placeholder="Your Message" style="height:200px"></textarea></p>
+                <button class="form-btn" type="submit">Submit</button>
+            </div>
+      </form>
+    </div>
+
+    <div class="comments-section" id="comments">
+        <h1 class="comments-title" style="position: relative; top: 0; margin-bottom: 40px;">COMMENTS</h1>
+        <div class="comment-form">
+            <input type="text" id="comment-name" placeholder="Your Name" class="form-input" style="width: 100%; margin-bottom: 10px;">
+            <textarea id="comment-text" placeholder="Write a comment..." class="form-input-message" style="width: 100%; height: 100px; margin-bottom: 10px;"></textarea>
+            
+            <div id="comment-gif-preview"></div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" class="gif-btn" onclick="openGifModal('comment-gif', 'comment-gif-preview')">+ Add GIF</button>
+                    <input type="hidden" id="comment-gif"> 
+                </div>
+                <button onclick="postComment()" class="form-btn">Post Comment</button>
+            </div>
         </div>
-</div>
+        <div id="comments-container" class="comments-list"></div>
+    </div>
 
     <div class="backtotop">
         <a href="#" class="backtotop-button">Back to Top</a>
@@ -171,6 +163,7 @@
             <p>Copyright &copy; 2026, Designed by <span class="copyright-name">Adrian</span></p>
         </div>
     </footer>
-    <script src="js/index.js"></script> 
+    
+    <script src="js/index.js?v=final"></script> 
 </body>
 </html>
