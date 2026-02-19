@@ -137,7 +137,7 @@ function renderComments() {
             </div>`;
         }).join('');
 
-        const editBtnHtml = comment.userId === myUserId ? `<button onclick="editComment('${comment._id}')" style="background:none; border:none; color:lightblue; cursor:pointer;">Edit</button>` : '';
+        
         const mainGifHtml = comment.gifUrl ? `<img src="${comment.gifUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 15px; display: block;">` : '';
 
         html += `
@@ -148,7 +148,7 @@ function renderComments() {
                         <span class="comment-date">${fullDate}</span>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
-                        ${editBtnHtml}
+ 
                         <button class="delete-btn" onclick="deleteComment('${comment._id}')">Delete</button>
                     </div>
                 </div>
@@ -220,6 +220,7 @@ async function postComment() {
     if(!nameInput || !msgInput || !nameInput.value || !msgInput.value) return alert("Fill all fields");
 
     const newComment = { name: nameInput.value, message: msgInput.value, gifUrl: gifInput ? gifInput.value : "", userId: myUserId };
+    console.log("Posting GIF:", gifInput.value);
     await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newComment) });
     
     nameInput.value = ""; msgInput.value = ""; 
@@ -227,15 +228,6 @@ async function postComment() {
     document.getElementById("comment-gif-preview").innerHTML = ""; 
     currentPage = 1; 
     loadComments(); 
-}
-
-async function editComment(id) {
-    const currentMsg = document.getElementById(`msg-${id}`).innerText;
-    const newMessage = prompt("Edit your comment:", currentMsg);
-    if (newMessage && newMessage !== currentMsg) {
-        await fetch(`${API_URL}/${id}/edit`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, message: newMessage }) });
-        loadComments();
-    }
 }
 
 async function voteComment(id, type) {
@@ -345,12 +337,27 @@ function closeGifModal() {
 
 async function fetchGifs(query) {
     if (!query) return;
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${query}&limit=8`;
-    const response = await fetch(url);
-    const json = await response.json();
-    document.getElementById("gif-results").innerHTML = json.data.map(gif => 
-        `<img src="${gif.images.fixed_height_small.url}" onclick="selectGif('${gif.images.downsized_medium.url}')">`
-    ).join('');
+
+    let url;
+
+    if (query === "trending") {
+        url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=8`;
+    } else {
+        url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=8`;
+    }
+
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+
+        document.getElementById("gif-results").innerHTML =
+            json.data.map(gif =>
+                `<img src="${gif.images.fixed_height_small.url}" onclick="selectGif('${gif.images.downsized_medium.url}')">`
+            ).join('');
+
+    } catch (err) {
+        console.error("Giphy fetch failed:", err);
+    }
 }
 
 function selectGif(url) {
@@ -368,3 +375,21 @@ function removeGif(inputId, previewId) {
     document.getElementById(inputId).value = "";
     document.getElementById(previewId).innerHTML = "";
 }
+
+setInterval(async () => {
+    const activeEl = document.activeElement;
+    if (activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA")) {
+        return; 
+    }
+
+    try {
+            const response = await fetch(API_URL);
+            const newComments = await response.json();
+ 
+            if (JSON.stringify(newComments) !== JSON.stringify(allComments)) {
+                allComments = newComments;
+                renderComments();
+            }
+        } catch (error) {
+    }
+}, 5000);
