@@ -60,8 +60,8 @@ window.addEventListener('resize', checkMobileAnimation);
    COMMENTS & DATABASE SETUP
 ========================================= */
 // Important: Switch back to your Render URL when deploying!
-// const API_URL = "http://127.0.0.1:3000/comments";
-const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
+const API_URL = "http://127.0.0.1:3000/comments";
+// const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 
 let myUserId = localStorage.getItem("myUserId");
 if (!myUserId) {
@@ -153,7 +153,9 @@ function renderComments() {
                     <span style="color:wheat; font-weight:bold; font-size: 14px;">${r.name}</span>
                     <span style="font-size:12px; color:gray;">${formatTime(r.date)}</span>
                 </div>
-                <div style="color: var(--secondary-color); font-size: 14px;">${r.message}</div>
+                <div style="color: var(--secondary-color); font-size: 14px;">
+                    ${formatMessage(r.message)}
+                </div>
                 <div style="margin-top: 5px;">
                     ${replyGifHtml}
                     ${replyImageHtml}
@@ -201,7 +203,7 @@ function renderComments() {
                 </div>
                 
                 <div class="comment-body ${isLong ? 'long-text' : ''}" id="body-${comment._id}">
-                    ${comment.message}
+                    ${formatMessage(comment.message)}
                 </div>
                 <div style="margin-top: 10px;">
                     ${mainGifHtml} 
@@ -508,15 +510,27 @@ function closeModal() {
     document.getElementById("delete-modal").style.display = "none"; 
     commentToDelete = null; 
 }
+
 async function confirmDelete() { 
     const password = document.getElementById("delete-password").value; 
-    if (password !== "adrian123") return alert("Incorrect Admin Password."); 
+    if (!password) return alert("Please enter a password."); 
+    
     try { 
-        await fetch(`${API_URL}/${commentToDelete}`, { method: "DELETE" }); 
-        closeModal(); 
-        loadComments(); 
+        const response = await fetch(`${API_URL}/${commentToDelete}`, { 
+            method: "DELETE",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminPassword: password }) // Send password to server
+        }); 
+        
+        if (response.ok) {
+            closeModal(); 
+            loadComments(); 
+        } else {
+            const data = await response.json();
+            alert(data.error); // Shows "Incorrect Admin Password" from server
+        }
     } catch (error) { 
-        alert("Failed to delete comment"); 
+        alert("Server error. Failed to delete comment."); 
     } 
 }
 
@@ -531,18 +545,27 @@ function closePinModal() {
     document.getElementById("pin-modal").style.display = "none"; 
     commentToPin = null; 
 }
+
 async function confirmPin() { 
     const password = document.getElementById("pin-password").value; 
-    if (password !== "adrian123") {
-        alert("Incorrect Admin Password.");
-        return;
-    }
+    if (!password) return alert("Please enter a password."); 
+    
     try { 
-        await fetch(`${API_URL}/${commentToPin}/pin`, { method: "PUT" }); 
-        closePinModal(); 
-        loadComments(); 
+        const response = await fetch(`${API_URL}/${commentToPin}/pin`, { 
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminPassword: password }) // Send password to server
+        }); 
+        
+        if (response.ok) {
+            closePinModal(); 
+            loadComments(); 
+        } else {
+            const data = await response.json();
+            alert(data.error); // Shows "Incorrect Admin Password" from server
+        }
     } catch (error) { 
-        alert("Failed to pin comment."); 
+        alert("Server error. Failed to pin comment."); 
     } 
 }
 
@@ -756,4 +779,17 @@ if (canvasElement) {
 
     createSnowfallEffect(); 
     renderAnimationLoop();
+}
+
+/* =========================================
+   TEXT FORMATTING HELPERS
+========================================= */
+function formatMessage(text) {
+    if (!text) return "";
+    
+    // Escape basic HTML to prevent XSS attacks
+    let safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    // Find any word starting with @ and wrap it in a styled span
+    return safeText.replace(/@(\w+)/g, '<span style="color: wheat; font-weight: bold;">@$1</span>');
 }
