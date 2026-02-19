@@ -57,8 +57,8 @@ window.addEventListener('resize', checkMobileAnimation);
    COMMENTS FUNCTIONALITY 
 ========================================= */
 
-// const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
-const API_URL = "http://127.0.0.1:3000/comments";
+const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
+// const API_URL = "http://127.0.0.1:3000/comments";
 
 let myUserId = localStorage.getItem("myUserId");
 if (!myUserId) {
