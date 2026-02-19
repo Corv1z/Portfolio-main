@@ -57,8 +57,8 @@ window.addEventListener('resize', checkMobileAnimation);
    COMMENTS FUNCTIONALITY 
 ========================================= */
 
-const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
-// const API_URL = "http://127.0.0.1:3000/comments";
+// const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
+const API_URL = "http://127.0.0.1:3000/comments";
 
 let myUserId = localStorage.getItem("myUserId");
 if (!myUserId) {
@@ -91,6 +91,7 @@ function renderComments() {
     if (!container) return;
 
     allComments.sort((a, b) => {
+        if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1; // Pinned always stays on top
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
         return currentSort === "newest" ? dateB - dateA : dateA - dateB;
@@ -142,27 +143,32 @@ function renderComments() {
         const mainGifHtml = comment.gifUrl ? `<img src="${comment.gifUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 15px; display: block;">` : '';
 
         const isLong = comment.message.length > 300;
+        const pinnedBadge = comment.isPinned ? `<span style="background: rgba(245, 222, 179, 0.2); color: wheat; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 10px; border: 1px solid rgba(245, 222, 179, 0.4);">📌 Pinned</span>` : '';
 
         html += `
-                <div class="comment-card">
-                    <div class="comment-header">
-                        <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
-                    <img src="${avatarUrl}" class="comment-avatar">
-                    
-                    <div style="display: flex; flex-direction: column;">
-                        <span class="comment-name">${comment.name}</span>
-                        <span class="comment-date">${fullDate}</span>
+            <div class="comment-card" style="${comment.isPinned ? 'border: 1px solid wheat;' : ''}">
+                <div class="comment-header">
+                    <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
+                        <img src="${avatarUrl}" class="comment-avatar">
+                        <div style="display: flex; flex-direction: column;">
+                            <div style="display: flex; align-items: center;">
+                                <span class="comment-name">${comment.name}</span>
+                                ${pinnedBadge}
+                            </div>
+                            <span class="comment-date">${fullDate}</span>
+                        </div>
                     </div>
-                </div>
                     <div style="display:flex; gap:10px; align-items:center;">
- 
+                        <button class="delete-btn" style="color: wheat; border-color: wheat; background: transparent;" onclick="pinComment('${comment._id}')">Pin</button>
                         <button class="delete-btn" onclick="deleteComment('${comment._id}')">Delete</button>
                     </div>
                 </div>
-                <div class="comment-body" id="msg-${comment._id}">
+                <div class="comment-body ${isLong ? 'long-text' : ''}" id="body-${comment._id}">
                     ${comment.message}
-                    ${mainGifHtml}
                 </div>
+                ${mainGifHtml} 
+                
+                ${isLong ? `<button class="read-more-btn" id="btn-${comment._id}" style="display:block;" onclick="toggleReadMore('${comment._id}')">Read More</button>` : ''}
                 
                 <div style="margin-top: 15px; display: flex; gap: 15px; font-size: 14px; align-items: center;">
                     <button class="vote-btn ${userLiked ? 'active-like' : ''}" onclick="voteComment('${comment._id}', 'like')">👍 ${likesCount}</button>
@@ -394,12 +400,17 @@ setInterval(async () => {
             indicator.style.opacity = "0";
         }
 
-        if (JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
+        // THE FIX: Check if the user is currently focused on any input or textarea
+        const activeEl = document.activeElement;
+        const isUserTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
+
+        // Only redraw the comments if the user IS NOT typing
+        if (!isUserTyping && JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
             allComments = data.comments;
             renderComments();
         }
     } catch (error) {}
-}, 3000); 
+}, 3000);
 
 const canvasElement = document.getElementById("snow-canvas");
 const canvasContext = canvasElement.getContext("2d");
@@ -493,3 +504,61 @@ commentInput.addEventListener("input", () => {
     }, 3000);
 });
 
+function toggleReadMore(id) {
+    const body = document.getElementById(`body-${id}`);
+    const btn = document.getElementById(`btn-${id}`);
+
+    if (body.classList.contains("expanded")) {
+        body.classList.remove("expanded");
+        btn.innerText = "Read More";
+    } else {
+        body.classList.add("expanded");
+        btn.innerText = "Show Less";
+    }
+}
+
+/* =========================================
+   PIN MODAL & LOGIC
+========================================= */
+document.body.insertAdjacentHTML('beforeend', `
+    <div id="pin-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
+            <p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to Pin/Unpin this comment.</p>
+            <input type="password" id="pin-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;">
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button onclick="closePinModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button>
+                <button onclick="confirmPin()" class="form-btn" style="background: rgba(245, 222, 179, 0.1); border-color: wheat; color: wheat; width: 100%;">Confirm</button>
+            </div>
+        </div>
+    </div>
+`);
+
+let commentToPin = null;
+
+function pinComment(id) {
+    commentToPin = id;
+    document.getElementById("pin-password").value = ""; 
+    document.getElementById("pin-modal").style.display = "flex"; 
+}
+
+function closePinModal() {
+    document.getElementById("pin-modal").style.display = "none";
+    commentToPin = null;
+}
+
+async function confirmPin() {
+    const password = document.getElementById("pin-password").value;
+    if (password !== "adrian123") {
+        alert("Incorrect Admin Password.");
+        return;
+    }
+    
+    try {
+        await fetch(`${API_URL}/${commentToPin}/pin`, { method: "PUT" });
+        closePinModal(); 
+        loadComments(); 
+    } catch (error) {
+        alert("Failed to pin comment.");
+    }
+}
