@@ -652,3 +652,69 @@ function formatMessage(text) {
     let safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return safeText.replace(/@(\w+)/g, '<span style="color: wheat; font-weight: bold;">@$1</span>');
 }
+
+/* =========================================
+   DUTCH WORD GENERATOR (INTERACTIVE)
+========================================= */
+function updateDutchWord() {
+    const dutchDictionary = [
+        { dutch: "Gezellig", eng: "Cozy / Social / Fun" },
+        { dutch: "Lekker", eng: "Tasty / Nice / Delicious" },
+        { dutch: "Dank je wel", eng: "Thank you very much" },
+        { dutch: "Mooi", eng: "Beautiful / Pretty" },
+        { dutch: "Succes", eng: "Good luck" },
+        { dutch: "Fiets", eng: "Bicycle" },
+        { dutch: "Hond", eng: "Dog" },
+        { dutch: "Kat", eng: "Cat" },
+        { dutch: "Brood", eng: "Bread" },
+        { dutch: "Kaas", eng: "Cheese" },
+        { dutch: "Appel", eng: "Apple" },
+        { dutch: "Huis", eng: "House" },
+        { dutch: "Boom", eng: "Tree" },
+        { dutch: "Zon", eng: "Sun" },
+        { dutch: "Maan", eng: "Moon" },
+        { dutch: "Ster", eng: "Star" },
+        { dutch: "Boek", eng: "Book" },
+        { dutch: "Water", eng: "Water" },
+        { dutch: "Vriend", eng: "Friend" },
+        { dutch: "Kind", eng: "Child" },
+        { dutch: "Tafel", eng: "Table" },
+        { dutch: "Stoel", eng: "Chair" },
+        { dutch: "Raam", eng: "Window" },
+        { dutch: "Deur", eng: "Door" },
+        { dutch: "Regen", eng: "Rain" },
+        { dutch: "Geld", eng: "Money" },
+        { dutch: "Blij", eng: "Happy" },
+        { dutch: "Snel", eng: "Fast" },
+        { dutch: "Klein", eng: "Small" },
+        { dutch: "Groot", eng: "Big" },
+        { dutch: "Ochtend", eng: "Morning" },
+        { dutch: "Nacht", eng: "Night" }
+    ];
+
+    const wordEl = document.getElementById("dutch-word");
+    const transEl = document.getElementById("dutch-translation");
+    const displayBox = document.getElementById("dutch-display-box");
+    const icon = document.getElementById("refresh-icon");
+
+    // Start Animations
+    displayBox.classList.remove("animate-word");
+    icon.classList.remove("spin-icon");
+    
+    // Trigger Reflow for animation reset
+    void displayBox.offsetWidth; 
+    void icon.offsetWidth;
+
+    // Select Random Word
+    const randomWord = dutchDictionary[Math.floor(Math.random() * dutchDictionary.length)];
+    
+    wordEl.innerText = randomWord.dutch;
+    transEl.innerText = randomWord.eng;
+
+    // Apply Animation Classes
+    displayBox.classList.add("animate-word");
+    icon.classList.add("spin-icon");
+}
+
+// Initial Load
+document.addEventListener("DOMContentLoaded", updateDutchWord);
