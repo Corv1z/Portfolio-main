@@ -1,3 +1,6 @@
+/* =========================================
+   UI & NAVIGATION
+========================================= */
 var headerImage = document.querySelector(".header-image");
 var navbar = document.querySelector(".navbar");
 
@@ -54,12 +57,11 @@ function checkMobileAnimation() {
 window.addEventListener('resize', checkMobileAnimation);
 
 /* =========================================
-   COMMENTS FUNCTIONALITY 
+   COMMENTS & DATABASE SETUP
 ========================================= */
-
 // Important: Switch back to your Render URL when deploying!
-const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 // const API_URL = "http://127.0.0.1:3000/comments";
+const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 
 let myUserId = localStorage.getItem("myUserId");
 if (!myUserId) {
@@ -80,7 +82,7 @@ async function loadComments() {
     try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        allComments = data.comments; // Data is now { comments: [], typingList: [] }
+        allComments = data.comments; 
         renderComments(); 
     } catch (error) {
         console.error("Error loading comments:", error);
@@ -88,10 +90,14 @@ async function loadComments() {
     }
 }
 
+/* =========================================
+   RENDER COMMENTS
+========================================= */
 function renderComments() {
     const container = document.getElementById("comments-container");
     if (!container) return;
 
+    // Sorting Logic
     allComments.sort((a, b) => {
         if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
         const dateA = new Date(a.date);
@@ -99,11 +105,13 @@ function renderComments() {
         return currentSort === "newest" ? dateB - dateA : dateA - dateB;
     });
 
+    // Pagination Logic
     const totalPages = Math.ceil(allComments.length / commentsPerPage) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
     const startIndex = (currentPage - 1) * commentsPerPage;
     const paginatedComments = allComments.slice(startIndex, startIndex + commentsPerPage);
 
+    // Render Controls
     let html = `
         <div class="comments-controls" style="justify-content: flex-start; gap: 15px;">
             <select class="sort-dropdown" onchange="changeSort(this.value)">
@@ -120,6 +128,7 @@ function renderComments() {
         </div>
     `;
 
+    // Render Each Comment
     paginatedComments.forEach(comment => {
         const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(comment.name)}`;
         const fullDate = formatTime(comment.date);
@@ -128,13 +137,13 @@ function renderComments() {
         const userLiked = Array.isArray(comment.likes) && comment.likes.includes(myUserId);
         const userDisliked = Array.isArray(comment.dislikes) && comment.dislikes.includes(myUserId);
 
+        // Render Replies
         let repliesHtml = (comment.replies || []).map(r => {
             const replyLikes = Array.isArray(r.likes) ? r.likes.length : 0;
             const replyDislikes = Array.isArray(r.dislikes) ? r.dislikes.length : 0;
             const userLikedReply = Array.isArray(r.likes) && r.likes.includes(myUserId);
             const userDislikedReply = Array.isArray(r.dislikes) && r.dislikes.includes(myUserId);
             
-            // NEW: Added zoom-in cursor and onclick to reply images
             const replyGifHtml = r.gifUrl ? `<div class="media-preview-wrapper"><img src="${r.gifUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${r.gifUrl}')"></div>` : '';
             const replyImageHtml = r.imageUrl ? `<div class="media-preview-wrapper"><img src="${r.imageUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${r.imageUrl}')"></div>` : '';
             
@@ -158,19 +167,20 @@ function renderComments() {
             </div>`;
         }).join('');
 
-        // NEW: Added zoom-in cursor and onclick to main comment images
+        // Comment Visuals & State
         const mainGifHtml = comment.gifUrl ? `<div class="media-preview-wrapper"><img src="${comment.gifUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.gifUrl}')"></div>` : '';
         const mainImageHtml = comment.imageUrl ? `<div class="media-preview-wrapper"><img src="${comment.imageUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.imageUrl}')"></div>` : '';
-
         const isLong = comment.message.length > 300;
         const pinnedBadge = comment.isPinned ? `<span style="background: rgba(245, 222, 179, 0.2); color: wheat; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 10px; border: 1px solid rgba(245, 222, 179, 0.4);">📌 Pinned</span>` : '';
 
+        // Reaction Counts
         const hearts = comment.reactions?.heart?.length || 0;
         const laughs = comment.reactions?.laugh?.length || 0;
         const wows = comment.reactions?.wow?.length || 0;
         const sads = comment.reactions?.sad?.length || 0;
         const fires = comment.reactions?.fire?.length || 0;
 
+        // Construct HTML for the Main Card
         html += `
             <div class="comment-card" style="${comment.isPinned ? 'border: 1px solid wheat;' : ''}">
                 <div class="comment-header">
@@ -189,6 +199,7 @@ function renderComments() {
                         <button class="delete-btn" onclick="deleteComment('${comment._id}')">Delete</button>
                     </div>
                 </div>
+                
                 <div class="comment-body ${isLong ? 'long-text' : ''}" id="body-${comment._id}">
                     ${comment.message}
                 </div>
@@ -259,6 +270,9 @@ function renderComments() {
     container.innerHTML = html;
 }
 
+/* =========================================
+   PAGINATION & SORTING
+========================================= */
 function changePage(newPage) {
     currentPage = newPage;
     renderComments();
@@ -278,12 +292,14 @@ function changeSort(newSort) {
     renderComments();
 }
 
-// UPDATED: Now uses FormData to send files
+/* =========================================
+   POSTING DATA TO SERVER
+========================================= */
 async function postComment() {
     const nameInput = document.getElementById("comment-name");
     const msgInput = document.getElementById("comment-text");
     const gifInput = document.getElementById("comment-gif");
-    const imageInput = document.getElementById("comment-image-input"); // Get file input
+    const imageInput = document.getElementById("comment-image-input"); 
     
     if(!nameInput || !msgInput || !nameInput.value || !msgInput.value) return alert("Fill all fields");
 
@@ -304,23 +320,15 @@ async function postComment() {
             clearImagePreview('comment-image-input', 'comment-image-preview');
             currentPage = 1;
             loadComments();
-        } else { alert("Failed to post comment."); }
-    } catch (error) { console.error("Error:", error); alert("Error posting comment."); }
+        } else { 
+            alert("Failed to post comment."); 
+        }
+    } catch (error) { 
+        console.error("Error:", error); 
+        alert("Error posting comment."); 
+    }
 }
 
-async function voteComment(id, type) {
-    await fetch(`${API_URL}/${id}/vote`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, type: type }) });
-    loadComments();
-}
-
-function toggleReplyBox(id) {
-    const box = document.getElementById(`reply-box-${id}`);
-    const mainActions = document.getElementById(`main-actions-${id}`);
-    mainActions.insertAdjacentElement('afterend', box);
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
-}
-
-// UPDATED: Now uses FormData to send files
 async function postReply(id) {
     const nameInput = document.getElementById(`reply-name-${id}`);
     const msgInput = document.getElementById(`reply-msg-${id}`);
@@ -345,71 +353,97 @@ async function postReply(id) {
             document.getElementById(`reply-gif-preview-${id}`).innerHTML = "";
             clearImagePreview(`reply-image-input-${id}`, `reply-image-preview-${id}`);
             loadComments();
-        } else { alert("Failed to post reply."); }
-    } catch (error) { console.error("Error:", error); alert("Error posting reply."); }
+        } else { 
+            alert("Failed to post reply."); 
+        }
+    } catch (error) { 
+        console.error("Error:", error); 
+        alert("Error posting reply."); 
+    }
 }
 
-// ... (Delete modals, formatTime, Giphy functions remain the same) ...
-document.body.insertAdjacentHTML('beforeend', `<div id="delete-modal" class="custom-modal-overlay"><div class="custom-modal-box"><h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3><p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to delete this comment.</p><input type="password" id="delete-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;"><div style="display: flex; justify-content: space-between; gap: 10px;"><button onclick="closeModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button><button onclick="confirmDelete()" class="form-btn" style="background: rgba(255, 100, 100, 0.1); border-color: #ff6b6b; color: #ff6b6b; width: 100%;">Delete</button></div></div></div>`);
-let commentToDelete = null;
-function deleteComment(id) { commentToDelete = id; document.getElementById("delete-password").value = ""; document.getElementById("delete-modal").style.display = "flex"; }
-function closeModal() { document.getElementById("delete-modal").style.display = "none"; commentToDelete = null; }
-async function confirmDelete() { const password = document.getElementById("delete-password").value; if (password !== "adrian123") return alert("Incorrect Admin Password."); try { await fetch(`${API_URL}/${commentToDelete}`, { method: "DELETE" }); closeModal(); loadComments(); } catch (error) { alert("Failed to delete comment"); } }
-function formatTime(dateString) { const date = new Date(dateString); const exact = date.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); const secs = Math.floor((new Date() - date) / 1000); let relative = 'Just now'; if (secs >= 60 && secs < 3600) relative = Math.floor(secs/60) + ' mins ago'; else if (secs >= 3600 && secs < 86400) relative = Math.floor(secs/3600) + ' hours ago'; else if (secs >= 86400) relative = Math.floor(secs/86400) + ' days ago'; return `${exact} • ${relative}`; }
-const GIPHY_API_KEY = "8DmyfSHSLUnnK0lxTkTDQQ21RYYGEvMR"; let targetGifInput = ""; let targetGifPreview = "";
-document.body.insertAdjacentHTML('beforeend', `<div id="gif-modal" class="gif-modal"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;"><h3 style="color:wheat; margin:0;">Search Giphy</h3><button onclick="closeGifModal()" style="background:none; border:none; color:white; cursor:pointer;">✖</button></div><input type="text" id="gif-search" placeholder="Search..." class="form-input" style="width:100%; padding:8px;" onkeyup="fetchGifs(this.value)"><div id="gif-results" class="gif-grid"></div></div>`);
-function openGifModal(inputId, previewId) { targetGifInput = inputId; targetGifPreview = previewId; document.getElementById("gif-modal").style.display = "block"; fetchGifs("trending"); }
-function closeGifModal() { document.getElementById("gif-modal").style.display = "none"; }
-async function fetchGifs(query) { if (!query) return; let url; if (query === "trending") { url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=8`; } else { url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=8`; } try { const response = await fetch(url); const json = await response.json(); document.getElementById("gif-results").innerHTML = json.data.map(gif => `<img src="${gif.images.fixed_height_small.url}" onclick="selectGif('${gif.images.downsized_medium.url}')">`).join(''); } catch (err) { console.error("Giphy fetch failed:", err); } }
-function selectGif(url) { document.getElementById(targetGifInput).value = url; document.getElementById(targetGifPreview).innerHTML = `<div style="position:relative; display:inline-block; margin-bottom: 10px;"><img src="${url}" style="border-radius:8px; max-height:150px; border: 1px solid rgba(255,255,255,0.2);"><button type="button" onclick="removeGif('${targetGifInput}', '${targetGifPreview}')" style="position:absolute; top:-10px; right:-10px; background:rgba(255,50,50,0.9); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-weight:bold;">✖</button></div>`; closeGifModal(); }
-function removeGif(inputId, previewId) { document.getElementById(inputId).value = ""; document.getElementById(previewId).innerHTML = ""; }
+/* =========================================
+   VOTING & REACTIONS
+========================================= */
+async function voteComment(id, type) {
+    await fetch(`${API_URL}/${id}/vote`, { 
+        method: 'PUT', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ userId: myUserId, type: type }) 
+    });
+    loadComments();
+}
 
-setInterval(async () => {
+async function voteReply(commentId, replyId, type) {
+    await fetch(`${API_URL}/${commentId}/reply/${replyId}/vote`, { 
+        method: 'PUT', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ userId: myUserId, type: type }) 
+    });
+    loadComments();
+}
+
+async function reactToComment(id, emojiType) {
     try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        const indicator = document.getElementById("typing-indicator");
-        const othersTyping = data.typingList.filter(u => u.name !== (document.getElementById("comment-name").value || "Someone"));
+        await fetch(`${API_URL}/${id}/react`, { 
+            method: 'PUT', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ userId: myUserId, emojiType: emojiType }) 
+        });
+        loadComments();
+    } catch (error) {
+        console.error("Reaction failed:", error);
+    }
+}
 
-        if (othersTyping.length > 0) {
-            indicator.innerText = `${othersTyping[0].name} is typing...`;
-            indicator.style.opacity = "1";
-        } else {
-            indicator.style.opacity = "0";
-        }
+/* =========================================
+   UI INTERACTIONS
+========================================= */
+function toggleReplyBox(id) {
+    const box = document.getElementById(`reply-box-${id}`);
+    const mainActions = document.getElementById(`main-actions-${id}`);
+    mainActions.insertAdjacentElement('afterend', box);
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
 
-        const activeEl = document.activeElement;
-        const isUserTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
+function replyToReply(commentId, targetName, replyId) {
+    const box = document.getElementById(`reply-box-${commentId}`);
+    const specificReply = document.getElementById(`reply-item-${replyId}`);
+    specificReply.insertAdjacentElement('afterend', box);
+    box.style.display = 'block';
+    
+    const msgBox = document.getElementById(`reply-msg-${commentId}`);
+    msgBox.value = `@${targetName} `; 
+    msgBox.focus(); 
+}
 
-        if (!isUserTyping && JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
-            allComments = data.comments;
-            renderComments();
-        }
-    } catch (error) {}
-}, 3000);
+function toggleReadMore(id) {
+    const body = document.getElementById(`body-${id}`);
+    const btn = document.getElementById(`btn-${id}`);
+    if (body.classList.contains("expanded")) {
+        body.classList.remove("expanded");
+        btn.innerText = "Read More";
+    } else {
+        body.classList.add("expanded");
+        btn.innerText = "Show Less";
+    }
+}
 
-// ... (Snowflake animation remains the same) ...
-const canvasElement = document.getElementById("snow-canvas"); const canvasContext = canvasElement.getContext("2d"); let viewportWidth = window.innerWidth; let viewportHeight = window.innerHeight; const snowflakeCollection = []; const totalSnowflakeCount = 400; function resizeCanvasToWindow() { viewportWidth = window.innerWidth; viewportHeight = window.innerHeight; canvasElement.width = viewportWidth; canvasElement.height = viewportHeight; } window.addEventListener("resize", resizeCanvasToWindow); resizeCanvasToWindow(); class Snowflake { constructor() { this.initializeProperties(); } initializeProperties() { this.horizontalCoordinate = Math.random() * viewportWidth; this.verticalCoordinate = Math.random() * viewportHeight; this.particleRadius = Math.random() * 3 + 1; this.fallVelocity = Math.random() * 1.5 + 0.5; this.horizontalDrift = Math.random() * 1 - 0.5; this.opacityLevel = Math.random() * 0.8 + 0.2; } updateMovement() { this.verticalCoordinate += this.fallVelocity; this.horizontalCoordinate += this.horizontalDrift; if (this.verticalCoordinate > viewportHeight) { this.verticalCoordinate = -10; this.horizontalCoordinate = Math.random() * viewportWidth; } } drawToCanvas() { canvasContext.beginPath(); canvasContext.arc(this.horizontalCoordinate, this.verticalCoordinate, this.particleRadius, 0, Math.PI * 2); canvasContext.fillStyle = `rgba(255, 255, 255, ${this.opacityLevel})`; canvasContext.fill(); } } function createSnowfallEffect() { for (let i = 0; i < totalSnowflakeCount; i++) { snowflakeCollection.push(new Snowflake()); } } function renderAnimationLoop() { canvasContext.clearRect(0, 0, viewportWidth, viewportHeight); snowflakeCollection.forEach((snowflake) => { snowflake.updateMovement(); snowflake.drawToCanvas(); }); requestAnimationFrame(renderAnimationLoop); } createSnowfallEffect(); renderAnimationLoop();
+function formatTime(dateString) {
+    const date = new Date(dateString);
+    const exact = date.toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const secs = Math.floor((new Date() - date) / 1000);
+    let relative = 'Just now';
+    
+    if (secs >= 60 && secs < 3600) relative = Math.floor(secs/60) + ' mins ago';
+    else if (secs >= 3600 && secs < 86400) relative = Math.floor(secs/3600) + ' hours ago';
+    else if (secs >= 86400) relative = Math.floor(secs/86400) + ' days ago';
+    return `${exact} • ${relative}`;
+}
 
-const commentInput = document.getElementById("comment-text");
-let typingTimer;
-commentInput.addEventListener("input", () => { const name = document.getElementById("comment-name").value || "Someone"; fetch(`${API_URL}/typing`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, name: name, isTyping: true }) }); clearTimeout(typingTimer); typingTimer = setTimeout(() => { fetch(`${API_URL}/typing`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, isTyping: false }) }); }, 3000); });
-
-function toggleReadMore(id) { const body = document.getElementById(`body-${id}`); const btn = document.getElementById(`btn-${id}`); if (body.classList.contains("expanded")) { body.classList.remove("expanded"); btn.innerText = "Read More"; } else { body.classList.add("expanded"); btn.innerText = "Show Less"; } }
-
-// ... (Pin Modal remains the same) ...
-document.body.insertAdjacentHTML('beforeend', `<div id="pin-modal" class="custom-modal-overlay"><div class="custom-modal-box"><h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3><p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to Pin/Unpin this comment.</p><input type="password" id="pin-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;"><div style="display: flex; justify-content: space-between; gap: 10px;"><button onclick="closePinModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button><button onclick="confirmPin()" class="form-btn" style="background: rgba(245, 222, 179, 0.1); border-color: wheat; color: wheat; width: 100%;">Confirm</button></div></div></div>`);
-let commentToPin = null;
-function pinComment(id) { commentToPin = id; document.getElementById("pin-password").value = ""; document.getElementById("pin-modal").style.display = "flex"; }
-function closePinModal() { document.getElementById("pin-modal").style.display = "none"; commentToPin = null; }
-async function confirmPin() { const password = document.getElementById("pin-password").value; if (password !== "adrian123") { alert("Incorrect Admin Password."); return; } try { await fetch(`${API_URL}/${commentToPin}/pin`, { method: "PUT" }); closePinModal(); loadComments(); } catch (error) { alert("Failed to pin comment."); } }
-
-async function voteReply(commentId, replyId, type) { await fetch(`${API_URL}/${commentId}/reply/${replyId}/vote`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, type: type }) }); loadComments(); }
-function replyToReply(commentId, targetName, replyId) { const box = document.getElementById(`reply-box-${commentId}`); const specificReply = document.getElementById(`reply-item-${replyId}`); specificReply.insertAdjacentElement('afterend', box); box.style.display = 'block'; const msgBox = document.getElementById(`reply-msg-${commentId}`); msgBox.value = `@${targetName} `; msgBox.focus(); }
-
-async function reactToComment(id, emojiType) { try { await fetch(`${API_URL}/${id}/react`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: myUserId, emojiType: emojiType }) }); loadComments(); } catch (error) { console.error("Reaction failed:", error); } }
-
-// NEW: Functions to handle image previews
+/* =========================================
+   MEDIA UPLOADS & PREVIEWS
+========================================= */
 function handleImagePreview(inputId, previewId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
@@ -433,6 +467,150 @@ function clearImagePreview(inputId, previewId) {
     document.getElementById(previewId).innerHTML = "";
 }
 
+/* =========================================
+   ADMIN MODALS (PIN / DELETE)
+========================================= */
+// Create modals in HTML
+document.body.insertAdjacentHTML('beforeend', `
+    <div id="delete-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
+            <p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to delete this comment.</p>
+            <input type="password" id="delete-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;">
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button onclick="closeModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button>
+                <button onclick="confirmDelete()" class="form-btn" style="background: rgba(255, 100, 100, 0.1); border-color: #ff6b6b; color: #ff6b6b; width: 100%;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pin-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
+            <p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to Pin/Unpin this comment.</p>
+            <input type="password" id="pin-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;">
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <button onclick="closePinModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button>
+                <button onclick="confirmPin()" class="form-btn" style="background: rgba(245, 222, 179, 0.1); border-color: wheat; color: wheat; width: 100%;">Confirm</button>
+            </div>
+        </div>
+    </div>
+`);
+
+// Delete Logic
+let commentToDelete = null;
+function deleteComment(id) { 
+    commentToDelete = id; 
+    document.getElementById("delete-password").value = ""; 
+    document.getElementById("delete-modal").style.display = "flex"; 
+}
+function closeModal() { 
+    document.getElementById("delete-modal").style.display = "none"; 
+    commentToDelete = null; 
+}
+async function confirmDelete() { 
+    const password = document.getElementById("delete-password").value; 
+    if (password !== "adrian123") return alert("Incorrect Admin Password."); 
+    try { 
+        await fetch(`${API_URL}/${commentToDelete}`, { method: "DELETE" }); 
+        closeModal(); 
+        loadComments(); 
+    } catch (error) { 
+        alert("Failed to delete comment"); 
+    } 
+}
+
+// Pin Logic
+let commentToPin = null;
+function pinComment(id) { 
+    commentToPin = id; 
+    document.getElementById("pin-password").value = ""; 
+    document.getElementById("pin-modal").style.display = "flex"; 
+}
+function closePinModal() { 
+    document.getElementById("pin-modal").style.display = "none"; 
+    commentToPin = null; 
+}
+async function confirmPin() { 
+    const password = document.getElementById("pin-password").value; 
+    if (password !== "adrian123") {
+        alert("Incorrect Admin Password.");
+        return;
+    }
+    try { 
+        await fetch(`${API_URL}/${commentToPin}/pin`, { method: "PUT" }); 
+        closePinModal(); 
+        loadComments(); 
+    } catch (error) { 
+        alert("Failed to pin comment."); 
+    } 
+}
+
+/* =========================================
+   GIPHY INTEGRATION
+========================================= */
+const GIPHY_API_KEY = "8DmyfSHSLUnnK0lxTkTDQQ21RYYGEvMR"; 
+let targetGifInput = ""; 
+let targetGifPreview = "";
+
+document.body.insertAdjacentHTML('beforeend', `
+    <div id="gif-modal" class="gif-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <h3 style="color:wheat; margin:0;">Search Giphy</h3>
+            <button onclick="closeGifModal()" style="background:none; border:none; color:white; cursor:pointer;">✖</button>
+        </div>
+        <input type="text" id="gif-search" placeholder="Search..." class="form-input" style="width:100%; padding:8px;" onkeyup="fetchGifs(this.value)">
+        <div id="gif-results" class="gif-grid"></div>
+    </div>
+`);
+
+function openGifModal(inputId, previewId) { 
+    targetGifInput = inputId; 
+    targetGifPreview = previewId; 
+    document.getElementById("gif-modal").style.display = "block"; 
+    fetchGifs("trending"); 
+}
+
+function closeGifModal() { 
+    document.getElementById("gif-modal").style.display = "none"; 
+}
+
+async function fetchGifs(query) { 
+    if (!query) return; 
+    let url = query === "trending" 
+        ? `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=8` 
+        : `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=8`; 
+        
+    try { 
+        const response = await fetch(url); 
+        const json = await response.json(); 
+        document.getElementById("gif-results").innerHTML = json.data.map(gif => 
+            `<img src="${gif.images.fixed_height_small.url}" onclick="selectGif('${gif.images.downsized_medium.url}')">`
+        ).join(''); 
+    } catch (err) { 
+        console.error("Giphy fetch failed:", err); 
+    } 
+}
+
+function selectGif(url) { 
+    document.getElementById(targetGifInput).value = url; 
+    document.getElementById(targetGifPreview).innerHTML = `
+        <div class="media-preview-wrapper">
+            <img src="${url}" class="media-preview-image">
+            <button type="button" class="remove-media-btn" onclick="removeGif('${targetGifInput}', '${targetGifPreview}')">✖</button>
+        </div>
+    `; 
+    closeGifModal(); 
+}
+
+function removeGif(inputId, previewId) { 
+    document.getElementById(inputId).value = ""; 
+    document.getElementById(previewId).innerHTML = ""; 
+}
+
+/* =========================================
+   LIGHTBOX
+========================================= */
 document.body.insertAdjacentHTML('beforeend', `
     <div id="lightbox-modal" onclick="closeLightbox()" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; cursor: zoom-out;">
         <span style="position: absolute; top: 20px; right: 30px; color: wheat; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
@@ -448,4 +626,134 @@ function openLightbox(imgSrc) {
 function closeLightbox() {
     document.getElementById('lightbox-modal').style.display = 'none';
     document.getElementById('lightbox-img').src = '';
+}
+
+/* =========================================
+   TYPING INDICATOR & POLLING
+========================================= */
+const commentInput = document.getElementById("comment-text");
+let typingTimer;
+
+if(commentInput) {
+    commentInput.addEventListener("input", () => { 
+        const name = document.getElementById("comment-name").value || "Someone"; 
+        
+        fetch(`${API_URL}/typing`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ userId: myUserId, name: name, isTyping: true }) 
+        }); 
+        
+        clearTimeout(typingTimer); 
+        
+        typingTimer = setTimeout(() => { 
+            fetch(`${API_URL}/typing`, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ userId: myUserId, isTyping: false }) 
+            }); 
+        }, 3000); 
+    });
+}
+
+setInterval(async () => {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        const indicator = document.getElementById("typing-indicator");
+        const nameInput = document.getElementById("comment-name");
+        const currentName = nameInput ? nameInput.value : "Someone";
+        
+        const othersTyping = data.typingList.filter(u => u.name !== currentName);
+
+        if (indicator) {
+            if (othersTyping.length > 0) {
+                indicator.innerText = `${othersTyping[0].name} is typing...`;
+                indicator.style.opacity = "1";
+            } else {
+                indicator.style.opacity = "0";
+            }
+        }
+
+        const activeEl = document.activeElement;
+        const isUserTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
+
+        if (!isUserTyping && JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
+            allComments = data.comments;
+            renderComments();
+        }
+    } catch (error) {}
+}, 3000);
+
+/* =========================================
+   SNOW ANIMATION ENGINE
+========================================= */
+const canvasElement = document.getElementById("snow-canvas"); 
+if (canvasElement) {
+    const canvasContext = canvasElement.getContext("2d"); 
+    let viewportWidth = window.innerWidth; 
+    let viewportHeight = window.innerHeight; 
+    const snowflakeCollection = []; 
+    const totalSnowflakeCount = 400; 
+
+    function resizeCanvasToWindow() { 
+        viewportWidth = window.innerWidth; 
+        viewportHeight = window.innerHeight; 
+        canvasElement.width = viewportWidth; 
+        canvasElement.height = viewportHeight; 
+    } 
+
+    window.addEventListener("resize", resizeCanvasToWindow); 
+    resizeCanvasToWindow(); 
+
+    class Snowflake { 
+        constructor() { 
+            this.initializeProperties(); 
+        } 
+
+        initializeProperties() { 
+            this.horizontalCoordinate = Math.random() * viewportWidth; 
+            this.verticalCoordinate = Math.random() * viewportHeight; 
+            this.particleRadius = Math.random() * 3 + 1; 
+            this.fallVelocity = Math.random() * 1.5 + 0.5; 
+            this.horizontalDrift = Math.random() * 1 - 0.5; 
+            this.opacityLevel = Math.random() * 0.8 + 0.2; 
+        } 
+
+        updateMovement() { 
+            this.verticalCoordinate += this.fallVelocity; 
+            this.horizontalCoordinate += this.horizontalDrift; 
+            
+            if (this.verticalCoordinate > viewportHeight) { 
+                this.verticalCoordinate = -10; 
+                this.horizontalCoordinate = Math.random() * viewportWidth; 
+            } 
+        } 
+
+        drawToCanvas() { 
+            canvasContext.beginPath(); 
+            canvasContext.arc(this.horizontalCoordinate, this.verticalCoordinate, this.particleRadius, 0, Math.PI * 2); 
+            canvasContext.fillStyle = `rgba(255, 255, 255, ${this.opacityLevel})`; 
+            canvasContext.fill(); 
+        } 
+    } 
+
+    function createSnowfallEffect() { 
+        for (let i = 0; i < totalSnowflakeCount; i++) { 
+            snowflakeCollection.push(new Snowflake()); 
+        } 
+    } 
+
+    function renderAnimationLoop() { 
+        canvasContext.clearRect(0, 0, viewportWidth, viewportHeight); 
+        snowflakeCollection.forEach((snowflake) => { 
+            snowflake.updateMovement(); 
+            snowflake.drawToCanvas(); 
+        }); 
+        requestAnimationFrame(renderAnimationLoop); 
+    } 
+
+    createSnowfallEffect(); 
+    renderAnimationLoop();
 }
