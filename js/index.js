@@ -60,8 +60,8 @@ window.addEventListener('resize', checkMobileAnimation);
    COMMENTS & DATABASE SETUP
 ========================================= */
 // Important: Switch back to your Render URL when deploying!
-const API_URL = "http://127.0.0.1:3000/comments";
-// const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
+// const API_URL = "http://127.0.0.1:3000/comments";
+const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 
 let myUserId = localStorage.getItem("myUserId");
 if (!myUserId) {
