@@ -118,6 +118,7 @@ function renderComments() {
     `;
 
     paginatedComments.forEach(comment => {
+        const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(comment.name)}`;
         const fullDate = formatTime(comment.date);
         const likesCount = Array.isArray(comment.likes) ? comment.likes.length : 0;
         const dislikesCount = Array.isArray(comment.dislikes) ? comment.dislikes.length : 0;
@@ -140,13 +141,19 @@ function renderComments() {
         
         const mainGifHtml = comment.gifUrl ? `<img src="${comment.gifUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 15px; display: block;">` : '';
 
+        const isLong = comment.message.length > 300;
+
         html += `
-            <div class="comment-card">
-                <div class="comment-header">
-                    <div class="header-left">
+                <div class="comment-card">
+                    <div class="comment-header">
+                        <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
+                    <img src="${avatarUrl}" class="comment-avatar">
+                    
+                    <div style="display: flex; flex-direction: column;">
                         <span class="comment-name">${comment.name}</span>
                         <span class="comment-date">${fullDate}</span>
                     </div>
+                </div>
                     <div style="display:flex; gap:10px; align-items:center;">
  
                         <button class="delete-btn" onclick="deleteComment('${comment._id}')">Delete</button>
@@ -377,19 +384,118 @@ function removeGif(inputId, previewId) {
 }
 
 setInterval(async () => {
-    const activeEl = document.activeElement;
-    if (activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA")) {
-        return; 
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json(); // Now contains { comments, typingList }
+        
+        // Update Typing Indicator
+        const indicator = document.getElementById("typing-indicator");
+        const othersTyping = data.typingList.filter(u => u.name !== (document.getElementById("comment-name").value || "Someone"));
+
+        if (othersTyping.length > 0) {
+            indicator.innerText = `${othersTyping[0].name} is typing...`;
+            indicator.style.opacity = "1";
+        } else {
+            indicator.style.opacity = "0";
+        }
+
+        // Update comments if needed
+        if (JSON.stringify(data.comments) !== JSON.stringify(allComments)) {
+            allComments = data.comments;
+            renderComments();
+        }
+    } catch (error) {}
+}, 3000); // Check faster (every 3s) for smoother interaction
+
+const canvasElement = document.getElementById("snow-canvas");
+const canvasContext = canvasElement.getContext("2d");
+
+let viewportWidth = window.innerWidth;
+let viewportHeight = window.innerHeight;
+const snowflakeCollection = [];
+const totalSnowflakeCount = 400;
+
+function resizeCanvasToWindow() {
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+    canvasElement.width = viewportWidth;
+    canvasElement.height = viewportHeight;
+}
+
+window.addEventListener("resize", resizeCanvasToWindow);
+resizeCanvasToWindow();
+
+class Snowflake {
+    constructor() {
+        this.initializeProperties();
     }
 
-    try {
-            const response = await fetch(API_URL);
-            const newComments = await response.json();
- 
-            if (JSON.stringify(newComments) !== JSON.stringify(allComments)) {
-                allComments = newComments;
-                renderComments();
-            }
-        } catch (error) {
+    initializeProperties() {
+        this.horizontalCoordinate = Math.random() * viewportWidth;
+        this.verticalCoordinate = Math.random() * viewportHeight;
+        this.particleRadius = Math.random() * 3 + 1;
+        this.fallVelocity = Math.random() * 1.5 + 0.5;
+        this.horizontalDrift = Math.random() * 1 - 0.5; 
+        this.opacityLevel = Math.random() * 0.8 + 0.2;
     }
-}, 5000);
+
+    updateMovement() {
+        this.verticalCoordinate += this.fallVelocity;
+        this.horizontalCoordinate += this.horizontalDrift;
+
+        if (this.verticalCoordinate > viewportHeight) {
+            this.verticalCoordinate = -10;
+            this.horizontalCoordinate = Math.random() * viewportWidth;
+        }
+    }
+
+    drawToCanvas() {
+        canvasContext.beginPath();
+        canvasContext.arc(this.horizontalCoordinate, this.verticalCoordinate, this.particleRadius, 0, Math.PI * 2);
+        canvasContext.fillStyle = `rgba(255, 255, 255, ${this.opacityLevel})`;
+        canvasContext.fill();
+    }
+}
+
+function createSnowfallEffect() {
+    for (let i = 0; i < totalSnowflakeCount; i++) {
+        snowflakeCollection.push(new Snowflake());
+    }
+}
+
+function renderAnimationLoop() {
+    canvasContext.clearRect(0, 0, viewportWidth, viewportHeight);
+    snowflakeCollection.forEach((snowflake) => {
+        snowflake.updateMovement();
+        snowflake.drawToCanvas();
+    });
+    requestAnimationFrame(renderAnimationLoop);
+}
+
+createSnowfallEffect();
+renderAnimationLoop();
+
+const commentInput = document.getElementById("comment-text");
+let typingTimer;
+
+commentInput.addEventListener("input", () => {
+    const name = document.getElementById("comment-name").value || "Someone";
+    
+    // Tell server "I am typing"
+    fetch(`${API_URL}/typing`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: myUserId, name: name, isTyping: true })
+    });
+
+    // Clear status if they stop typing for 3 seconds
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => {
+        fetch(`${API_URL}/typing`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: myUserId, isTyping: false })
+        });
+    }, 3000);
+});
+

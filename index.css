@@ -17,6 +17,15 @@ body{
     background-attachment: fixed; 
 }
 
+.header-image, 
+.about-section, 
+.skills-section, 
+.projects-section, 
+.contacts-section, 
+.comments-section {
+    background-color: transparent !important;
+}
+
 .background-video {
     position: fixed;
     top: 0;
@@ -703,9 +712,38 @@ html {
 }
 
 .comment-body {
+    position: relative;
+    max-height: 150px;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
     color: var(--secondary-color);
     font-family: sans-serif;
-    line-height: 1.9;
+}
+
+.comment-body.expanded {
+    max-height: 2000px;
+}
+
+.read-more-btn {
+    background: none;
+    border: none;
+    color: wheat;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 5px 0;
+    display: none; /* Hidden by default */
+}
+
+.comment-body:not(.expanded).long-text::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(transparent, rgba(11, 19, 43, 0.9)); /* Matches your snow background */
+    pointer-events: none;
 }
 
 .vote-btn {
@@ -754,6 +792,7 @@ html {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 0 10px 10px 0;
     animation: fadeIn 0.3s ease;
+    font-family: sans-serif;
 }
 
 .reply-header {
@@ -898,21 +937,134 @@ html {
 }
 
 .gif-modal {
-    display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%);
-    background: #111; padding: 20px; border: 1px solid wheat; border-radius: 10px;
-    z-index: 10000; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+    display: none; 
+    position: fixed; 
+    top: 15%; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: #111; 
+    padding: 20px; 
+    border: 1px solid wheat; 
+    border-radius: 10px;
+    z-index: 10000; 
+    width: 320px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
 }
 .gif-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
-    max-height: 250px; overflow-y: auto; margin-top: 15px;
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
+    max-height: 250px; 
+    overflow-y: auto; 
+    margin-top: 15px;
 }
-.gif-grid img { width: 100%; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-.gif-grid img:hover { transform: scale(1.05); border: 2px solid wheat; }
+
+.gif-grid img { 
+    width: 100%; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+}
+.gif-grid img:hover { 
+    transform: scale(1.05); 
+    border: 2px solid wheat; 
+
+}
 .gif-btn {
-    background: transparent; border: 1px solid gray; color: gray; border-radius: 5px;
-    padding: 5px 10px; cursor: pointer; font-family: 'Inter', sans-serif;
+    background: transparent; 
+    border: 1px solid gray; 
+    color: gray; 
+    border-radius: 5px;
+    padding: 5px 10px; 
+    cursor: pointer; 
+    font-family: 'Inter', sans-serif;
 }
-.gif-btn:hover { border-color: wheat; color: wheat; }
+
+.gif-btn:hover { 
+    border-color: wheat; 
+    color: wheat; 
+}
+
+#snow-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--primary-color); 
+}
+
+.react-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.reaction-popup {
+    display: none;
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    background: rgba(33, 33, 33, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    animation: popUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Show the menu when hovering over the wrapper */
+.react-wrapper:hover .reaction-popup {
+    display: flex;
+    gap: 10px;
+}
+
+.reaction-popup span {
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.reaction-popup span:hover {
+    transform: scale(1.4) translateY(-5px);
+}
+
+@keyframes popUp {
+    from { opacity: 0; transform: translateY(10px) scale(0.8); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.reaction-badges {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.badge {
+    background: rgba(245, 222, 179, 0.1);
+    border: 1px solid rgba(245, 222, 179, 0.2);
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: wheat;
+}
+
+.comment-avatar {
+    width: 45px;
+    height: 45px;
+    background: rgba(245, 222, 179, 0.1);
+    border-radius: 50%;
+    border: 1px solid rgba(245, 222, 179, 0.3);
+    padding: 2px;
+}
+
+.dark-theme .comment-avatar {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
 
 @media (max-width: 768px) {
     html {
@@ -990,7 +1142,7 @@ html {
     }
 
     .navbar a {
-        font-size: 13px;
+        font-size: 11px;
         padding: 5px;
         gap: 0; 
     }
@@ -1092,6 +1244,13 @@ html {
     .contact-box {
         width: 140px;
         height: 140px;
+    }
+
+    .comments-title{
+        font-size: 50px;
+    }
+
+    .comments-section {
     }
 
     .footer{
