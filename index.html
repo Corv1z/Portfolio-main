@@ -8,10 +8,9 @@
     <meta property="og:title" content="Adrian | Personal Portfolio">
     <meta property="og:description" content="My personal portfolio or something, just go take a look at it.">
     <meta property="og:image" content="https://ajsportfolionew.netlify.app/images/chickenonatree.jpg">
-
-<meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="index.css">
-    <link rel="icon" href="images/HUH.png">
+    <link rel="icon" href="images/steamdeck.png" type="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <title>Portfolio</title>
 </head>
@@ -43,16 +42,25 @@
     <div id="about" class="about-section">
         <div class="about-lefttext">
             <p>
-                I am a developer studying at Our Lady of Fatima University. I started learning HTML and CSS back in 2024 while recovering from my Amputation surgery, since that was the only way mind mind could take off the painful Phantom Pain.
+                I like playing games, most notably Legend of Zelda TOTK, and BOTW. Not really into multiplayer, competitive games since that just pisses me off, so i just stick to Singleplayer games which i really enjoy
             </p>
-        </div>
+            <div class="games-popup-wrapper" style="position: relative; display: inline-block; margin-top: 15px;">
+    <button class="form-btn" style="margin-top: 0; padding: 10px 20px; font-size: 14px;" onclick="toggleGamesPopup()">Favorite Games</button>
+    
+    <div id="games-floating-popup" class="games-floating-popup">
+        <h4>My Favorites</h4>
+        <div class="games-list" id="games-list-container"></div>
+    </div>
+</div>
+
+    </div>
         <div class="about-text">
             <h1 class="about-h1">ABOUT</h1>
-            <img class="about-image" src="images/chicken on a tree.jpg">
+            <img class="about-image" src="images/ishowspeed-speed.gif">
         </div>
         <div class="about-righttext">
             <p>
-                I also like playing games, most notably Legend of Zelda TOTK, and BOTW, not really into multiplayer,competitive games since that just pisses me off, so i just stick to Singleplayer gameas which i really enjoy
+                I am a developer studying at Our Lady of Fatima University. I started learning HTML and CSS back in 2024 while recovering from my Amputation surgery, since that was the only way mind mind could take off the painful Phantom Pain.
             </p>
         </div>
     </div>
@@ -152,7 +160,7 @@
                 </p>
                 <p>Name: <input class="form-input" type="text" id="fname" name="name" placeholder="Name">
                 </p>
-                <p>Message<textarea class="form-input-message" id="subject" name="message" placeholder="Your Message" style="height:200px"></textarea>
+                <p>Message<textarea class="form-input-message" id="subject" name="message" placeholder="Your Message..." style="height:200px"></textarea>
                 </p>
                 <button class="form-btn" type="submit">Submit</button>
             </div>
@@ -192,7 +200,7 @@
     <div class="backtotop">
         <a href="#" class="backtotop-button">Back to Top</a>
     </div>
-
+    
     <footer class="footer">
         <div class="copyright">
             <p>Copyright &copy; 2026, Designed by <span class="copyright-name">Adrian</span></p>

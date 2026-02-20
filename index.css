@@ -264,6 +264,10 @@ html {
     width: 100%;
 }
 
+.about-lefttext {
+    z-index: 50;
+}
+
 .about-lefttext, 
 .about-righttext {
     width: 300px;
@@ -325,6 +329,7 @@ html {
     width: 100%;
     max-width: 400px;
     margin: 0 auto 0 auto; 
+    display: flex;
     flex-direction: column;
     padding: 25px;
     background: var(--glass-bg);
@@ -392,8 +397,7 @@ html {
     margin-bottom: 10px; 
     font-style: italic; 
     opacity: 0; 
-    transition: 
-    opacity 0.3s; 
+    transition: opacity 0.3s;
     width: 100%; 
     text-align: left; 
     padding-left: 10px;
@@ -469,6 +473,16 @@ html {
     color: wheat;
     letter-spacing: 5px;
     margin: 0;
+}
+
+.games-floating-popup h4{
+    color: wheat; 
+    margin-bottom: 15px; 
+    font-size: 14px; 
+    text-align: center;
+    font-family: sans-serif;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
 }
 
 .skills-image{
@@ -784,6 +798,9 @@ html {
 
 .form-input-message {
     width: 100% !important;
+    max-width: 100%;
+    min-height: 100px;
+    resize: vertical;
     display: block;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1056,6 +1073,82 @@ html {
 .sort-dropdown option {
     background: #111;
     color: white;
+}
+
+.games-floating-popup.show {
+    display: block;
+    animation: popUpCentered 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* New animation that remembers to keep it centered on the X axis */
+@keyframes popUpCentered {
+    from { opacity: 0; transform: translate(-50%, 10px) scale(0.8); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.games-floating-popup {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 15px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px; 
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    z-index: 50;
+}
+
+/* Flexbox layout for the list with Scrolling Fix */
+.games-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Creates 2 equal columns */
+    column-gap: 20px;
+    row-gap: 15px;
+    max-height: 300px; /* Force a maximum height */
+    overflow-y: auto;  /* Add scrollbar inside the popup */
+    padding-right: 5px; /* Keeps the scrollbar off your text */
+    overflow-x: hidden;
+}
+
+/* Individual game row */
+.game-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: wheat;
+    font-size: 13px;
+    font-family: sans-serif;
+    text-align: left;
+    transition: transform 0.2s ease;
+    text-decoration: none; 
+}
+
+.game-name{
+    color: wheat;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: sans-serif;
+    text-align: left;
+}
+
+.game-item:hover {
+    transform: translateX(5px);
+    color: wheat; 
+}
+
+/* Game Icon styling */
+.game-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .pagination-container {
@@ -1449,6 +1542,24 @@ html {
     font-family: 'Inter', sans-serif;
     }
 
+    .games-floating-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        bottom: auto; /* Overrides the desktop bottom position */
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 320px;
+        z-index: 9999;
+    }
+
+    .games-list {
+        grid-template-columns: 1fr; /* 1 column on mobile */
+        max-height: 50vh; /* Max height is 50% of the phone screen */
+        overflow-y: auto; /* Adds scrolling ONLY on mobile */
+        padding-right: 5px;
+    }
+
     .copyright p{
         font-size: 15px;
     }
@@ -1464,7 +1575,7 @@ html {
     margin-bottom: 15px;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+    }
 
     .comment-header .delete-btn, 
     .comment-header .pin-btn {
@@ -1473,32 +1584,32 @@ html {
         padding: 3px 8px;
     }
 
- /* Reply Styling */
-.reply-container {
-    margin-left: 30px;
-    margin-top: 15px;
-    padding: 15px;
-    border-left: 3px solid wheat; 
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0 15px 15px 0;
-}
+    /* Reply Styling */
+    .reply-container {
+        margin-left: 30px;
+        margin-top: 15px;
+        padding: 15px;
+        border-left: 3px solid wheat; 
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 0 15px 15px 0;
+    }
 
-.reply-form-box {
-    margin-top: 15px;
-    margin-left: 30px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px dashed rgba(245, 222, 179, 0.3);
-    border-radius: 15px;
-}
-.main-actions-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    margin-top: 15px;
-    padding-top: 10px;
-}
+    .reply-form-box {
+        margin-top: 15px;
+        margin-left: 30px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px dashed rgba(245, 222, 179, 0.3);
+        border-radius: 15px;
+    }
+    .main-actions-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 10px;
+    }
 
     .vote-btn, .reply-btn {
         font-size: 12px;
