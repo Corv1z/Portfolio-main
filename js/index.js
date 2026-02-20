@@ -121,6 +121,12 @@ function renderComments() {
                 <option value="20" ${commentsPerPage == 20 ? 'selected' : ''}>Show 20</option>
             </select>
         </div>
+
+        <div class="pagination-container">
+            <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Prev</button>
+            <span style="color: wheat; align-self: center; font-size: 14px;">Page ${currentPage} of ${totalPages}</span>
+            <button class="page-btn" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next</button>
+        </div>
     `;
 
     paginatedComments.forEach(comment => {
