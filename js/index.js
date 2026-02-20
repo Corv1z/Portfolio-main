@@ -756,142 +756,142 @@ document.addEventListener('click', function(e) {
 const favoriteGames = [
     {
         name: "The Witcher 3",
-        img: "images/witcher3.png",
+        img: "images/game-list-images/witcher3.png",
         link: "https://store.steampowered.com/app/292030/The_Witcher_3_Wild_Hunt/"
     },
     {
         name: "Final Fantasy 7: Rebirth",
-        img: "images/ff7rebirth.ico",
+        img: "images/game-list-images/ff7rebirth.ico",
         link: "https://store.steampowered.com/app/2909400/FINAL_FANTASY_VII_REBIRTH/"
     },
     {
         name: "Elden Ring",
-        img: "images/eldenring.ico",
+        img: "images/game-list-images/eldenring.ico",
         link: "https://store.steampowered.com/app/1245620/ELDEN_RING/"
     },
     {
         name: "Dispatch",
-        img: "images/dispatch.png",
+        img: "images/game-list-images/dispatch.png",
         link: "https://store.steampowered.com/app/2592160/Dispatch/"
     },
     {
         name: "The Legend of Zelda: Tears of the Kingdom",
-        img: "images/loztotk.png",
+        img: "images/game-list-images/loztotk.png",
         link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition-switch-2/"
     },
     {
         name: "The Legend of Zelda: Breath of the Wild",
-        img: "images/lozbotw.png",
+        img: "images/game-list-images/lozbotw.png",
         link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/"
     },
     {
         name: "Clair Obscur: Expedition 33",
-        img: "images/clairobscur-6.png",
+        img: "images/game-list-images/clairobscur-6.png",
         link: "https://store.steampowered.com/app/1903340/Clair_Obscur_Expedition_33/"
     },
     {
         name: "Cyberpunk 2077",
-        img: "images/3997-1646274729-1047664581.webp",
+        img: "images/game-list-images/3997-1646274729-1047664581.webp",
         link: "https://store.steampowered.com/app/1091500/Cyberpunk_2077/"
     },
     {
         name: "Borderlands 3",
-        img: "images/borderlands3.png",
+        img: "images/game-list-images/borderlands3.png",
         link: "https://store.steampowered.com/app/397540/Borderlands_3/"
     },
     {
         name: "Resident Evil 4",
-        img: "images/re4.ico",
+        img: "images/game-list-images/re4.ico",
         link: "https://store.steampowered.com/app/2050650/Resident_Evil_4/"
     },
     {
         name: "The Last of Us™ Part I",
-        img: "images/tlou1.ico",
+        img: "images/game-list-images/tlou1.ico",
         link: "https://store.steampowered.com/app/1888930/The_Last_of_Us_Part_I/"
     },
     {
         name: "The Last of Us™ Part II",
-        img: "images/tlou2.png",
+        img: "images/game-list-images/tlou2.png",
         link: "https://store.steampowered.com/app/2531310/The_Last_of_Us_Part_II_Remastered/"
     },
     {
         name: "Counter Strike 2",
-        img: "images/cs2.png",
+        img: "images/game-list-images/cs2.png",
         link: "https://store.steampowered.com/app/730/CounterStrike_2/"
     },
     {
         name: "Death Stranding",
-        img: "images/deathstranding.png",
+        img: "images/game-list-images/deathstranding.png",
         link: "https://store.steampowered.com/app/1850570/DEATH_STRANDING_DIRECTORS_CUT/"
     },
     {
         name: "Kingdom Come Deliverance 2",
-        img: "images/kc2.ico",
+        img: "images/game-list-images/kc2.ico",
         link: "https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/"
     },
     {
         name: "Life is Strange",
-        img: "images/lis.png",
+        img: "images/game-list-images/lis.png",
         link: "https://store.steampowered.com/app/1265920/Life_is_Strange_Remastered/"
     },
     {
         name: "God of War Ragnarok",
-        img: "images/gowr.png",
+        img: "images/game-list-images/gowr.png",
         link: "https://store.steampowered.com/app/2322010/God_of_War_Ragnark/"
     },
     {
         name: "Metro Exodus",
-        img: "images/metroexodus.ico",
+        img: "images/game-list-images/metroexodus.ico",
         link: "https://store.steampowered.com/app/412020/Metro_Exodus/"
     },
     {
         name: "Assassin's Creed Odyssey",
-        img: "images/acodyssey.ico",
+        img: "images/game-list-images/acodyssey.ico",
         link: "https://store.steampowered.com/app/812140/Assassins_Creed_Odyssey/"
     },
     {
         name: "Red Dead Redemption 2",
-        img: "images/rdr2.png",
+        img: "images/game-list-images/rdr2.png",
         link: "https://store.steampowered.com/app/1174180/Red_Dead_Redemption_2/"
     },
     {
         name: "The Elder Scrolls V: Skyrim Special Edition",
-        img: "images/skyrim.png",
+        img: "images/game-list-images/skyrim.png",
         link: "https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/"
     },
     {
         name: "Dying Light: The Beast",
-        img: "images/dyinglightthebeast.png",
+        img: "images/game-list-images/dyinglightthebeast.png",
         link: "https://store.steampowered.com/app/3008130/Dying_Light_The_Beast/"
     },
     {
         name: "Days Gone",
-        img: "images/daysgone.ico",
+        img: "images/game-list-images/daysgone.ico",
         link: "https://store.steampowered.com/app/1259420/Days_Gone/"
     },
     {
         name: "DARK SOULS™ III",
-        img: "images/ds3.png",
+        img: "images/game-list-images/ds3.png",
         link: "https://store.steampowered.com/app/374320/DARK_SOULS_III/"
     },
     {
         name: "Blasphemous 2",
-        img: "images/blasphemous2.ico",
+        img: "images/game-list-images/blasphemous2.ico",
         link: "https://store.steampowered.com/app/2114740/Blasphemous_2/"
     },
     {
         name: "Hades II",
-        img: "images/hades2.png",
+        img: "images/game-list-images/hades2.png",
         link: "https://store.steampowered.com/app/1145350/Hades_II/"
     },
     {
         name: "Atomic Heart",
-        img: "images/atomicheart.ico",
+        img: "images/game-list-images/atomicheart.ico",
         link: "https://store.steampowered.com/app/668580/Atomic_Heart/"
     },
     {
         name: "Baldur's Gate 3",
-        img: "images/bg3.png",
+        img: "images/game-list-images/bg3.png",
         link: "https://store.steampowered.com/app/1086940/Baldurs_Gate_3/"
     }
 ];
