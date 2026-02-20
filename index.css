@@ -85,12 +85,12 @@ html {
 
 :root{
     --primary-color: rgba(105, 101, 90, 0.329);
-    --secondary-color: #212121;
+    --secondary-color: #0f0f0f;
     --glass-bg: rgba(0, 0, 0, 0.45);
 }
 
 .dark-theme{
-    --primary-color: #212121;
+    --primary-color: #0f0f0f;
     --secondary-color: rgb(226, 216, 187);
     --glass-bg: rgba(255, 255, 255, 0.05);
 }
