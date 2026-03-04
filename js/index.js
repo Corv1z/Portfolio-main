@@ -598,7 +598,7 @@ function removeGif(inputId, previewId) {
 }
 
 /* =========================================
-   LIGHTBOX, TYPING & SNOW
+   LIGHTBOX & TYPING INDICATOR
 ========================================= */
 document.body.insertAdjacentHTML('beforeend', `
     <div id="lightbox-modal" onclick="closeLightbox()" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; cursor: zoom-out;">
@@ -631,23 +631,106 @@ setInterval(async () => {
     } catch (error) {}
 }, 3000);
 
-const canvasElement = document.getElementById("snow-canvas"); 
-if (canvasElement) {
-    const canvasContext = canvasElement.getContext("2d"); 
-    let viewportWidth = window.innerWidth; 
-    let viewportHeight = window.innerHeight; 
-    const snowflakeCollection = []; 
-    function resize() { viewportWidth = window.innerWidth; viewportHeight = window.innerHeight; canvasElement.width = viewportWidth; canvasElement.height = viewportHeight; }
-    window.addEventListener("resize", resize); resize();
-    class Snowflake {
-        constructor() { this.reset(); }
-        reset() { this.x = Math.random() * viewportWidth; this.y = Math.random() * viewportHeight; this.r = Math.random() * 3 + 1; this.v = Math.random() * 1.5 + 0.5; this.d = Math.random() * 1 - 0.5; this.o = Math.random() * 0.8 + 0.2; }
-        update() { this.y += this.v; this.x += this.d; if (this.y > viewportHeight) { this.y = -10; this.x = Math.random() * viewportWidth; } }
-        draw() { canvasContext.beginPath(); canvasContext.arc(this.x, this.y, this.r, 0, Math.PI * 2); canvasContext.fillStyle = `rgba(255, 255, 255, ${this.o})`; canvasContext.fill(); }
+/* =========================================
+   INTERACTIVE SNOW CANVAS
+========================================= */
+const canvas = document.getElementById('snow-canvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
-    for (let i = 0; i < 400; i++) snowflakeCollection.push(new Snowflake());
-    function loop() { canvasContext.clearRect(0, 0, viewportWidth, viewportHeight); snowflakeCollection.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(loop); }
-    loop();
+    resizeCanvas();
+
+    let particlesArray = [];
+
+    // 1. Track the mouse position
+    let mouse = { x: null, y: null, radius: 120 };
+
+    window.addEventListener('mousemove', (event) => {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    // 2. Snowflake Class with Repulsion Physics
+    class Snowflake {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 1 - 0.5;
+            this.speedY = Math.random() * 1 + 0.5;
+        }
+
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            // Reset snow to the top if it falls off screen
+            if (this.y > canvas.height) {
+                this.y = 0 - this.size;
+                this.x = Math.random() * canvas.width;
+            }
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+
+            // Mouse interaction logic
+            if (mouse.x !== null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    
+                    this.x -= forceDirectionX * force * 4;
+                    this.y -= forceDirectionY * force * 4;
+                }
+            }
+        }
+
+        draw() {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // 3. Initialize and Animate
+    function initSnow() {
+        particlesArray = [];
+        let numberOfParticles = Math.floor((canvas.width * canvas.height) / 3000); 
+        for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new Snowflake());
+        }
+    }
+
+    function animateSnow() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+            particlesArray[i].draw();
+        }
+        requestAnimationFrame(animateSnow);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initSnow();
+    });
+
+    initSnow();
+    animateSnow();
 }
 
 /* =========================================
