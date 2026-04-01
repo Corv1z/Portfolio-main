@@ -1,6 +1,3 @@
-/* =========================================
-   UI & NAVIGATION
-========================================= */
 var headerImage = document.querySelector(".header-image");
 var navbar = document.querySelector(".navbar");
 
@@ -8,9 +5,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var icon = document.getElementById("icon");
     var body = document.body;
 
-    if (localStorage.getItem("darkMode") === "true") {
+    var savedMode = localStorage.getItem("darkMode");
+
+    if (savedMode === "false") {
+        body.classList.remove("dark-theme");
+        if(icon) icon.checked = false; 
+    } else {
         body.classList.add("dark-theme");
-        if(icon) icon.checked = true; 
+        if(icon) icon.checked = true;
+        localStorage.setItem("darkMode", "true");
     }
 
     if(icon) {
@@ -56,10 +59,6 @@ function checkMobileAnimation() {
 }
 window.addEventListener('resize', checkMobileAnimation);
 
-/* =========================================
-   COMMENTS & DATABASE SETUP
-========================================= */
-//   const API_URL = "http://127.0.0.1:3000/comments";
 const API_URL = "https://portfolio-backend-d3ko.onrender.com/comments";
 
 let myUserId = localStorage.getItem("myUserId");
@@ -76,7 +75,7 @@ let currentSort = "newest";
 async function loadComments() {
     const container = document.getElementById("comments-container");
     if (!container) return;
-    if (allComments.length === 0) container.innerHTML = "<p style='text-align:center; color:white;'>Loading...</p>";
+    if (allComments.length === 0) container.innerHTML = "<p style='text-align:center; color: var(--text-main);'>Loading...</p>";
     
     try {
         const response = await fetch(API_URL);
@@ -85,13 +84,10 @@ async function loadComments() {
         renderComments(); 
     } catch (error) {
         console.error("Error loading comments:", error);
-        container.innerHTML = "<p style='text-align:center; color:wheat;'>Server waking up or not running...</p>";
+        container.innerHTML = "<p style='text-align:center; color: var(--text-main);'>Server waking up or not running...</p>";
     }
 }
 
-/* =========================================
-   RENDER COMMENTS
-========================================= */
 function renderComments() {
     const container = document.getElementById("comments-container");
     if (!container) return;
@@ -124,7 +120,7 @@ function renderComments() {
 
         <div class="pagination-container">
             <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Prev</button>
-            <span style="color: wheat; align-self: center; font-size: 14px;">Page ${currentPage} of ${totalPages}</span>
+            <span style="color: var(--text-main); align-self: center; font-size: 14px;">Page ${currentPage} of ${totalPages}</span>
             <button class="page-btn" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next</button>
         </div>
     `;
@@ -149,10 +145,10 @@ function renderComments() {
             return `
             <div class="reply-container" id="reply-item-${r._id}">
                 <div class="reply-header">
-                    <span style="color:wheat; font-weight:bold; font-size: 14px;">${r.name}</span>
-                    <span style="font-size:12px; color:gray;">${formatTime(r.date)}</span>
+                    <span style="color:var(--text-main); font-weight:bold; font-size: 14px;">${r.name}</span>
+                    <span style="font-size:12px; color:var(--text-muted);">${formatTime(r.date)}</span>
                 </div>
-                <div style="color: var(--secondary-color); font-size: 14px;">
+                <div style="color: var(--text-main); font-size: 14px;">
                     ${formatMessage(r.message)}
                 </div>
                 <div style="margin-top: 5px;">
@@ -162,7 +158,7 @@ function renderComments() {
                 <div style="margin-top: 8px; display: flex; gap: 10px; font-size: 12px; align-items: center;">
                     <button class="vote-btn ${userLikedReply ? 'active-like' : ''}" onclick="voteReply('${comment._id}', '${r._id}', 'like')">👍 ${replyLikes}</button>
                     <button class="vote-btn ${userDislikedReply ? 'active-dislike' : ''}" onclick="voteReply('${comment._id}', '${r._id}', 'dislike')">👎 ${replyDislikes}</button>
-                    <button class="reply-btn" style="background: none; border: none; color: gray; cursor: pointer;" onclick="replyToReply('${comment._id}', '${r.name}', '${r._id}')">💬 Reply</button>
+                    <button class="reply-btn" style="background: none; border: none; color: var(--text-muted); cursor: pointer;" onclick="replyToReply('${comment._id}', '${r.name}', '${r._id}')">💬 Reply</button>
                     <button class="delete-btn" style="padding: 2px 8px;" onclick="deleteReply('${comment._id}', '${r._id}')">Delete</button>
                 </div>
             </div>`;
@@ -171,7 +167,7 @@ function renderComments() {
         const mainGifHtml = comment.gifUrl ? `<div class="media-preview-wrapper"><img src="${comment.gifUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.gifUrl}')"></div>` : '';
         const mainImageHtml = comment.imageUrl ? `<div class="media-preview-wrapper"><img src="${comment.imageUrl}" class="media-preview-image" style="cursor: zoom-in;" onclick="openLightbox('${comment.imageUrl}')"></div>` : '';
         const isLong = comment.message.length > 300;
-        const pinnedBadge = comment.isPinned ? `<span style="background: rgba(245, 222, 179, 0.2); color: wheat; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 10px; border: 1px solid rgba(245, 222, 179, 0.4);">📌 Pinned</span>` : '';
+        const pinnedBadge = comment.isPinned ? `<span style="background: var(--accent-hover); color: var(--text-main); padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 10px; border: 1px solid var(--accent-color);">📌 Pinned</span>` : '';
 
         const hearts = comment.reactions?.heart?.length || 0;
         const laughs = comment.reactions?.laugh?.length || 0;
@@ -180,7 +176,7 @@ function renderComments() {
         const fires = comment.reactions?.fire?.length || 0;
 
         html += `
-            <div class="comment-card" style="${comment.isPinned ? 'border: 1px solid wheat;' : ''}">
+            <div class="comment-card" style="${comment.isPinned ? 'border: 1px solid var(--accent-color);' : ''}">
                 <div class="comment-header">
                     <div class="header-left" style="display: flex; align-items: center; gap: 12px;">
                         <img src="${avatarUrl}" class="comment-avatar">
@@ -193,7 +189,7 @@ function renderComments() {
                         </div>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
-                        <button class="delete-btn" style="color: wheat; border-color: wheat; background: transparent;" onclick="pinComment('${comment._id}')">Pin</button>
+                        <button class="delete-btn" style="color: var(--accent-color); border-color: var(--accent-color); background: transparent;" onclick="pinComment('${comment._id}')">Pin</button>
                         <button class="delete-btn" onclick="deleteComment('${comment._id}')">Delete</button>
                     </div>
                 </div>
@@ -257,7 +253,7 @@ function renderComments() {
     html += `
         <div class="pagination-container">
             <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Prev</button>
-            <span style="color: wheat; align-self: center; font-size: 14px;">Page ${currentPage} of ${totalPages}</span>
+            <span style="color: var(--text-main); align-self: center; font-size: 14px;">Page ${currentPage} of ${totalPages}</span>
             <button class="page-btn" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next</button>
         </div>
     `;
@@ -265,9 +261,6 @@ function renderComments() {
     container.innerHTML = html;
 }
 
-/* =========================================
-   PAGINATION, SORTING & POSTING
-========================================= */
 function changePage(newPage) {
     currentPage = newPage;
     renderComments();
@@ -335,9 +328,6 @@ async function postReply(id) {
     } catch (error) { console.error("Error:", error); }
 }
 
-/* =========================================
-   VOTING & REACTIONS
-========================================= */
 async function voteComment(id, type) {
     await fetch(`${API_URL}/${id}/vote`, { 
         method: 'PUT', 
@@ -367,9 +357,6 @@ async function reactToComment(id, emojiType) {
     } catch (error) {}
 }
 
-/* =========================================
-   UI INTERACTIONS
-========================================= */
 function toggleReplyBox(id) {
     const box = document.getElementById(`reply-box-${id}`);
     const mainActions = document.getElementById(`main-actions-${id}`);
@@ -410,9 +397,6 @@ function formatTime(dateString) {
     return `${exact} • ${relative}`;
 }
 
-/* =========================================
-   MEDIA UPLOADS & PREVIEWS
-========================================= */
 function handleImagePreview(inputId, previewId) {
     const input = document.getElementById(inputId);
     const preview = document.getElementById(previewId);
@@ -437,29 +421,26 @@ function clearImagePreview(inputId, previewId) {
     if(preview) preview.innerHTML = "";
 }
 
-/* =========================================
-   ADMIN MODALS (PIN / DELETE / REPLY DELETE)
-========================================= */
 document.body.insertAdjacentHTML('beforeend', `
     <div id="delete-modal" class="custom-modal-overlay">
         <div class="custom-modal-box">
-            <h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
-            <p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to delete this item.</p>
+            <h3 style="color: var(--text-main); margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
+            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Enter password to delete this item.</p>
             <input type="password" id="delete-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; gap: 10px;">
-                <button onclick="closeModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button>
+                <button onclick="closeModal()" class="form-btn" style="background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); width: 100%;">Cancel</button>
                 <button id="modal-delete-confirm-btn" onclick="confirmDelete()" class="form-btn" style="background: rgba(255, 100, 100, 0.1); border-color: #ff6b6b; color: #ff6b6b; width: 100%;">Delete</button>
             </div>
         </div>
     </div>
     <div id="pin-modal" class="custom-modal-overlay">
         <div class="custom-modal-box">
-            <h3 style="color: wheat; margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
-            <p style="color: gray; font-size: 12px; margin-bottom: 15px;">Enter password to Pin/Unpin this comment.</p>
+            <h3 style="color: var(--text-main); margin-bottom: 10px; font-family: 'Inter', sans-serif;">Admin Access</h3>
+            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">Enter password to Pin/Unpin this comment.</p>
             <input type="password" id="pin-password" class="form-input" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center;">
             <div style="display: flex; justify-content: space-between; gap: 10px;">
-                <button onclick="closePinModal()" class="form-btn" style="background: transparent; border: 1px solid gray; color: gray; width: 100%;">Cancel</button>
-                <button onclick="confirmPin()" class="form-btn" style="background: rgba(245, 222, 179, 0.1); border-color: wheat; color: wheat; width: 100%;">Confirm</button>
+                <button onclick="closePinModal()" class="form-btn" style="background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); width: 100%;">Cancel</button>
+                <button onclick="confirmPin()" class="form-btn" style="background: var(--accent-hover); border-color: var(--accent-color); color: var(--accent-color); width: 100%;">Confirm</button>
             </div>
         </div>
     </div>
@@ -475,7 +456,6 @@ function closeModal() {
     document.getElementById("modal-delete-confirm-btn").setAttribute("onclick", "confirmDelete()");
 }
 
-// MAIN COMMENT DELETE
 function deleteComment(id) { 
     commentToDelete = id; 
     document.getElementById("delete-password").value = ""; 
@@ -496,7 +476,6 @@ async function confirmDelete() {
     } catch (error) { alert("Server error."); } 
 }
 
-// REPLY DELETE
 function deleteReply(commentId, replyId) {
     replyToDelete = { commentId, replyId };
     document.getElementById("delete-password").value = ""; 
@@ -518,7 +497,6 @@ async function confirmReplyDelete() {
     } catch (error) { alert("Server error."); }
 }
 
-// PIN LOGIC
 let commentToPin = null;
 function pinComment(id) { 
     commentToPin = id; 
@@ -540,9 +518,6 @@ async function confirmPin() {
     } catch (error) { alert("Server error."); } 
 }
 
-/* =========================================
-   GIPHY INTEGRATION (2000 LIMIT)
-========================================= */
 const GIPHY_API_KEY = "8DmyfSHSLUnnK0lxTkTDQQ21RYYGEvMR"; 
 let targetGifInput = ""; 
 let targetGifPreview = "";
@@ -550,8 +525,8 @@ let targetGifPreview = "";
 document.body.insertAdjacentHTML('beforeend', `
     <div id="gif-modal" class="gif-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-            <h3 style="color:wheat; margin:0;">Search Giphy</h3>
-            <button onclick="closeGifModal()" style="background:none; border:none; color:white; cursor:pointer;">✖</button>
+            <h3 style="color:var(--text-main); margin:0;">Search Giphy</h3>
+            <button onclick="closeGifModal()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">✖</button>
         </div>
         <input type="text" id="gif-search" placeholder="Search..." class="form-input" style="width:100%; padding:8px;" onkeyup="fetchGifs(this.value)">
         <div id="gif-results" class="gif-grid"></div>
@@ -597,13 +572,10 @@ function removeGif(inputId, previewId) {
     document.getElementById(previewId).innerHTML = ""; 
 }
 
-/* =========================================
-   LIGHTBOX & TYPING INDICATOR
-========================================= */
 document.body.insertAdjacentHTML('beforeend', `
     <div id="lightbox-modal" onclick="closeLightbox()" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; cursor: zoom-out;">
-        <span style="position: absolute; top: 20px; right: 30px; color: wheat; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
-        <img id="lightbox-img" style="max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(245, 222, 179, 0.2);">
+        <span style="position: absolute; top: 20px; right: 30px; color: var(--text-main); font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+        <img id="lightbox-img" style="max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">
     </div>
 `);
 
@@ -631,9 +603,6 @@ setInterval(async () => {
     } catch (error) {}
 }, 3000);
 
-/* =========================================
-   INTERACTIVE SNOW CANVAS
-========================================= */
 const canvas = document.getElementById('snow-canvas');
 if (canvas) {
     const ctx = canvas.getContext('2d');
@@ -645,8 +614,6 @@ if (canvas) {
     resizeCanvas();
 
     let particlesArray = [];
-
-    // 1. Track the mouse position
     let mouse = { x: null, y: null, radius: 120 };
 
     window.addEventListener('mousemove', (event) => {
@@ -659,7 +626,6 @@ if (canvas) {
         mouse.y = null;
     });
 
-    // 2. Snowflake Class with Repulsion Physics
     class Snowflake {
         constructor() {
             this.x = Math.random() * canvas.width;
@@ -673,7 +639,6 @@ if (canvas) {
             this.x += this.speedX;
             this.y += this.speedY;
 
-            // Reset snow to the top if it falls off screen
             if (this.y > canvas.height) {
                 this.y = 0 - this.size;
                 this.x = Math.random() * canvas.width;
@@ -681,7 +646,6 @@ if (canvas) {
             if (this.x > canvas.width) this.x = 0;
             if (this.x < 0) this.x = canvas.width;
 
-            // Mouse interaction logic
             if (mouse.x !== null) {
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
@@ -706,10 +670,9 @@ if (canvas) {
         }
     }
 
-    // 3. Initialize and Animate
     function initSnow() {
         particlesArray = [];
-        let numberOfParticles = Math.floor((canvas.width * canvas.height) / 3000); 
+        let numberOfParticles = Math.floor((canvas.width * canvas.height) / 7000); 
         for (let i = 0; i < numberOfParticles; i++) {
             particlesArray.push(new Snowflake());
         }
@@ -733,18 +696,12 @@ if (canvas) {
     animateSnow();
 }
 
-/* =========================================
-   TEXT FORMATTING HELPERS
-========================================= */
 function formatMessage(text) {
     if (!text) return "";
     let safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    return safeText.replace(/@(\w+)/g, '<span style="color: wheat; font-weight: bold;">@$1</span>');
+    return safeText.replace(/@(\w+)/g, '<span style="color: var(--accent-color); font-weight: bold;">@$1</span>');
 }
 
-/* =========================================
-   DUTCH WORD GENERATOR (INTERACTIVE)
-========================================= */
 function updateDutchWord() {
     const dutchDictionary = [
         { dutch: "Gezellig", eng: "Cozy / Social / Fun" },
@@ -786,37 +743,31 @@ function updateDutchWord() {
     const displayBox = document.getElementById("dutch-display-box");
     const icon = document.getElementById("refresh-icon");
 
-    // Start Animations
+    if(!displayBox) return; // Prevent error if element is missing
+
     displayBox.classList.remove("animate-word");
     icon.classList.remove("spin-icon");
     
-    // Trigger Reflow for animation reset
     void displayBox.offsetWidth; 
     void icon.offsetWidth;
 
-    // Select Random Word
     const randomWord = dutchDictionary[Math.floor(Math.random() * dutchDictionary.length)];
     
     wordEl.innerText = randomWord.dutch;
     transEl.innerText = randomWord.eng;
 
-    // Apply Animation Classes
     displayBox.classList.add("animate-word");
     icon.classList.add("spin-icon");
 }
-/* =========================================
-   FAVORITE GAMES POPUP LOGIC
-========================================= */
+
 function toggleGamesPopup() {
     document.getElementById("games-floating-popup").classList.toggle("show");
 }
 
-// Close popup when clicking outside of it
 document.addEventListener('click', function(event) {
     const popup = document.getElementById('games-floating-popup');
     const button = document.querySelector('.games-popup-wrapper .form-btn');
     
-    // Check if the popup is open, and if the click was OUTSIDE the popup and button
     if (popup && popup.classList.contains('show')) {
         if (!popup.contains(event.target) && event.target !== button) {
             popup.classList.remove('show');
@@ -824,169 +775,51 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Closes the pop-up if you click anywhere else on the screen
 document.addEventListener('click', function(e) {
     const wrapper = document.querySelector('.games-popup-wrapper');
     const popup = document.getElementById("games-floating-popup");
-    if (wrapper && !wrapper.contains(e.target) && popup.classList.contains("show")) {
+    if (wrapper && !wrapper.contains(e.target) && popup && popup.classList.contains("show")) {
         popup.classList.remove("show");
     }
 });
 
-/* =========================================
-   FAVORITE GAMES GENERATOR
-========================================= */
 const favoriteGames = [
-    {
-        name: "The Witcher 3",
-        img: "images/game-list-images/witcher3.png",
-        link: "https://store.steampowered.com/app/292030/The_Witcher_3_Wild_Hunt/"
-    },
-    {
-        name: "Final Fantasy 7: Rebirth",
-        img: "images/game-list-images/ff7rebirth.ico",
-        link: "https://store.steampowered.com/app/2909400/FINAL_FANTASY_VII_REBIRTH/"
-    },
-    {
-        name: "Elden Ring",
-        img: "images/game-list-images/eldenring.ico",
-        link: "https://store.steampowered.com/app/1245620/ELDEN_RING/"
-    },
-    {
-        name: "Dispatch",
-        img: "images/game-list-images/dispatch.png",
-        link: "https://store.steampowered.com/app/2592160/Dispatch/"
-    },
-    {
-        name: "The Legend of Zelda: Tears of the Kingdom",
-        img: "images/game-list-images/loztotk.png",
-        link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition-switch-2/"
-    },
-    {
-        name: "The Legend of Zelda: Breath of the Wild",
-        img: "images/game-list-images/lozbotw.png",
-        link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/"
-    },
-    {
-        name: "Clair Obscur: Expedition 33",
-        img: "images/game-list-images/clairobscur-6.png",
-        link: "https://store.steampowered.com/app/1903340/Clair_Obscur_Expedition_33/"
-    },
-    {
-        name: "Cyberpunk 2077",
-        img: "images/game-list-images/3997-1646274729-1047664581.webp",
-        link: "https://store.steampowered.com/app/1091500/Cyberpunk_2077/"
-    },
-    {
-        name: "Borderlands 3",
-        img: "images/game-list-images/borderlands3.png",
-        link: "https://store.steampowered.com/app/397540/Borderlands_3/"
-    },
-    {
-        name: "Resident Evil 4",
-        img: "images/game-list-images/re4.ico",
-        link: "https://store.steampowered.com/app/2050650/Resident_Evil_4/"
-    },
-    {
-        name: "The Last of Us™ Part I",
-        img: "images/game-list-images/tlou1.ico",
-        link: "https://store.steampowered.com/app/1888930/The_Last_of_Us_Part_I/"
-    },
-    {
-        name: "The Last of Us™ Part II",
-        img: "images/game-list-images/tlou2.png",
-        link: "https://store.steampowered.com/app/2531310/The_Last_of_Us_Part_II_Remastered/"
-    },
-    {
-        name: "Counter Strike 2",
-        img: "images/game-list-images/cs2.png",
-        link: "https://store.steampowered.com/app/730/CounterStrike_2/"
-    },
-    {
-        name: "Death Stranding",
-        img: "images/game-list-images/deathstranding.png",
-        link: "https://store.steampowered.com/app/1850570/DEATH_STRANDING_DIRECTORS_CUT/"
-    },
-    {
-        name: "Kingdom Come Deliverance 2",
-        img: "images/game-list-images/kc2.ico",
-        link: "https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/"
-    },
-    {
-        name: "Life is Strange",
-        img: "images/game-list-images/lis.png",
-        link: "https://store.steampowered.com/app/1265920/Life_is_Strange_Remastered/"
-    },
-    {
-        name: "God of War Ragnarok",
-        img: "images/game-list-images/gowr.png",
-        link: "https://store.steampowered.com/app/2322010/God_of_War_Ragnark/"
-    },
-    {
-        name: "Metro Exodus",
-        img: "images/game-list-images/metroexodus.ico",
-        link: "https://store.steampowered.com/app/412020/Metro_Exodus/"
-    },
-    {
-        name: "Assassin's Creed Odyssey",
-        img: "images/game-list-images/acodyssey.ico",
-        link: "https://store.steampowered.com/app/812140/Assassins_Creed_Odyssey/"
-    },
-    {
-        name: "Red Dead Redemption 2",
-        img: "images/game-list-images/rdr2.png",
-        link: "https://store.steampowered.com/app/1174180/Red_Dead_Redemption_2/"
-    },
-    {
-        name: "The Elder Scrolls V: Skyrim Special Edition",
-        img: "images/game-list-images/skyrim.png",
-        link: "https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/"
-    },
-    {
-        name: "Dying Light: The Beast",
-        img: "images/game-list-images/dyinglightthebeast.png",
-        link: "https://store.steampowered.com/app/3008130/Dying_Light_The_Beast/"
-    },
-    {
-        name: "Days Gone",
-        img: "images/game-list-images/daysgone.ico",
-        link: "https://store.steampowered.com/app/1259420/Days_Gone/"
-    },
-    {
-        name: "DARK SOULS™ III",
-        img: "images/game-list-images/ds3.png",
-        link: "https://store.steampowered.com/app/374320/DARK_SOULS_III/"
-    },
-    {
-        name: "Blasphemous 2",
-        img: "images/game-list-images/blasphemous2.ico",
-        link: "https://store.steampowered.com/app/2114740/Blasphemous_2/"
-    },
-    {
-        name: "Hades II",
-        img: "images/game-list-images/hades2.png",
-        link: "https://store.steampowered.com/app/1145350/Hades_II/"
-    },
-    {
-        name: "Atomic Heart",
-        img: "images/game-list-images/atomicheart.ico",
-        link: "https://store.steampowered.com/app/668580/Atomic_Heart/"
-    },
-    {
-        name: "Baldur's Gate 3",
-        img: "images/game-list-images/bg3.png",
-        link: "https://store.steampowered.com/app/1086940/Baldurs_Gate_3/"
-    }
+    { name: "The Witcher 3", img: "images/game-list-images/witcher3.png", link: "https://store.steampowered.com/app/292030/The_Witcher_3_Wild_Hunt/" },
+    { name: "Final Fantasy 7: Rebirth", img: "images/game-list-images/ff7rebirth.ico", link: "https://store.steampowered.com/app/2909400/FINAL_FANTASY_VII_REBIRTH/" },
+    { name: "Elden Ring", img: "images/game-list-images/eldenring.ico", link: "https://store.steampowered.com/app/1245620/ELDEN_RING/" },
+    { name: "Dispatch", img: "images/game-list-images/dispatch.png", link: "https://store.steampowered.com/app/2592160/Dispatch/" },
+    { name: "The Legend of Zelda: Tears of the Kingdom", img: "images/game-list-images/loztotk.png", link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-tears-of-the-kingdom-nintendo-switch-2-edition-switch-2/" },
+    { name: "The Legend of Zelda: Breath of the Wild", img: "images/game-list-images/lozbotw.png", link: "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/" },
+    { name: "Clair Obscur: Expedition 33", img: "images/game-list-images/clairobscur-6.png", link: "https://store.steampowered.com/app/1903340/Clair_Obscur_Expedition_33/" },
+    { name: "Cyberpunk 2077", img: "images/game-list-images/3997-1646274729-1047664581.webp", link: "https://store.steampowered.com/app/1091500/Cyberpunk_2077/" },
+    { name: "Borderlands 3", img: "images/game-list-images/borderlands3.png", link: "https://store.steampowered.com/app/397540/Borderlands_3/" },
+    { name: "Resident Evil 4", img: "images/game-list-images/re4.ico", link: "https://store.steampowered.com/app/2050650/Resident_Evil_4/" },
+    { name: "The Last of Us™ Part I", img: "images/game-list-images/tlou1.ico", link: "https://store.steampowered.com/app/1888930/The_Last_of_Us_Part_I/" },
+    { name: "The Last of Us™ Part II", img: "images/game-list-images/tlou2.png", link: "https://store.steampowered.com/app/2531310/The_Last_of_Us_Part_II_Remastered/" },
+    { name: "Counter Strike 2", img: "images/game-list-images/cs2.png", link: "https://store.steampowered.com/app/730/CounterStrike_2/" },
+    { name: "Death Stranding", img: "images/game-list-images/deathstranding.png", link: "https://store.steampowered.com/app/1850570/DEATH_STRANDING_DIRECTORS_CUT/" },
+    { name: "Kingdom Come Deliverance 2", img: "images/game-list-images/kc2.ico", link: "https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/" },
+    { name: "Life is Strange", img: "images/game-list-images/lis.png", link: "https://store.steampowered.com/app/1265920/Life_is_Strange_Remastered/" },
+    { name: "God of War Ragnarok", img: "images/game-list-images/gowr.png", link: "https://store.steampowered.com/app/2322010/God_of_War_Ragnark/" },
+    { name: "Metro Exodus", img: "images/game-list-images/metroexodus.ico", link: "https://store.steampowered.com/app/412020/Metro_Exodus/" },
+    { name: "Assassin's Creed Odyssey", img: "images/game-list-images/acodyssey.ico", link: "https://store.steampowered.com/app/812140/Assassins_Creed_Odyssey/" },
+    { name: "Red Dead Redemption 2", img: "images/game-list-images/rdr2.png", link: "https://store.steampowered.com/app/1174180/Red_Dead_Redemption_2/" },
+    { name: "The Elder Scrolls V: Skyrim Special Edition", img: "images/game-list-images/skyrim.png", link: "https://store.steampowered.com/app/489830/The_Elder_Scrolls_V_Skyrim_Special_Edition/" },
+    { name: "Dying Light: The Beast", img: "images/game-list-images/dyinglightthebeast.png", link: "https://store.steampowered.com/app/3008130/Dying_Light_The_Beast/" },
+    { name: "Days Gone", img: "images/game-list-images/daysgone.ico", link: "https://store.steampowered.com/app/1259420/Days_Gone/" },
+    { name: "DARK SOULS™ III", img: "images/game-list-images/ds3.png", link: "https://store.steampowered.com/app/374320/DARK_SOULS_III/" },
+    { name: "Blasphemous 2", img: "images/game-list-images/blasphemous2.ico", link: "https://store.steampowered.com/app/2114740/Blasphemous_2/" },
+    { name: "Hades II", img: "images/game-list-images/hades2.png", link: "https://store.steampowered.com/app/1145350/Hades_II/" },
+    { name: "Atomic Heart", img: "images/game-list-images/atomicheart.ico", link: "https://store.steampowered.com/app/668580/Atomic_Heart/" },
+    { name: "Baldur's Gate 3", img: "images/game-list-images/bg3.png", link: "https://store.steampowered.com/app/1086940/Baldurs_Gate_3/" }
 ];
 
 function loadFavoriteGames() {
     const container = document.getElementById('games-list-container');
     if (!container) return;
     
-    // Clear it first just in case
     container.innerHTML = "";
 
-    // Loop through the array and build the HTML
     favoriteGames.forEach(game => {
         const gameLink = document.createElement('a');
         gameLink.href = game.link;
@@ -1002,8 +835,5 @@ function loadFavoriteGames() {
     });
 }
 
-// Ensure games load when the site starts
 document.addEventListener("DOMContentLoaded", loadFavoriteGames);
-
-// Initial Load
 document.addEventListener("DOMContentLoaded", updateDutchWord);
